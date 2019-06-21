@@ -47,7 +47,6 @@ intel-ucode
 iproute2
 iputils
 jfsutils
-kitty
 less
 libreoffice-still
 libtool
@@ -115,6 +114,7 @@ qt5-websockets
 qt5-webview
 qt5-x11extras
 qt5-xmlpatterns
+racket
 ranger
 reiserfsprogs
 rofi
@@ -127,6 +127,7 @@ sysfsutils
 systemd
 systemd-sysvcompat
 tar
+termite
 texinfo
 thunderbird
 tlp
@@ -143,7 +144,6 @@ which
 wireless_tools
 wpa_supplicant
 xclip
-xfce4-terminal
 xfsprogs
 xorg-server
 xorg-xinit
