@@ -64,6 +64,7 @@ mdadm
 minecraft-launcher
 mplayer
 nano
+neofetch
 neovim-nightly
 netctl
 networkmanager
@@ -75,6 +76,8 @@ perl
 pkgconf
 procps-ng
 psmisc
+pulseaudio
+pulseaudio-alsa
 pyside2
 python-neovim
 qt5-3d
@@ -119,7 +122,6 @@ ranger
 reiserfsprogs
 rofi
 s-nail
-screenfetch
 sed
 shadow
 sudo
@@ -148,3 +150,4 @@ xfsprogs
 xorg-server
 xorg-xinit
 xorg-xrandr
+zsh
