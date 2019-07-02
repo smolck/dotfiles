@@ -188,26 +188,27 @@ bindsym $mod+r mode "resize"
 
 # --------------------------------------------------- StatusBar -----------------------------------------------------------
 
-bar {
-     colors {
-        background #222222
-        statusline #00A5FF #that neon blue
-        separator  #a6b3cc
-
-        focused_workspace  #a6b3cc #555555 #ffffff
-        active_workspace   #333333 #5f676a #ffffff
-        inactive_workspace #333333 #222222 #888888
-        urgent_workspace   #2f343a #900000 #ffffff
-    }
-    font pango:Iosevka Extrabold Italic 10
-    position top
-    tray_output none
-    mode dock
-    workspace_buttons yes
-    status_command python ~/.config/i3/pystatusbar.py
-
-    separator_symbol " | "
-}
+exec_always --no-startup-id $HOME/.config/polybar/scripts/launch.sh
+# bar {
+#      colors {
+#         background #222222
+#         statusline #00A5FF #that neon blue
+#         separator  #a6b3cc
+#
+#         focused_workspace  #a6b3cc #555555 #ffffff
+#         active_workspace   #333333 #5f676a #ffffff
+#         inactive_workspace #333333 #222222 #888888
+#         urgent_workspace   #2f343a #900000 #ffffff
+#     }
+#     font pango:Iosevka Extrabold Italic 10
+#     position top
+#     tray_output none
+#     mode dock
+#     workspace_buttons yes
+#     status_command python ~/.config/i3/pystatusbar.py
+#
+#     separator_symbol " | "
+# }
 
 # -------------------------------------------------------------------------------------------------------------------------
 

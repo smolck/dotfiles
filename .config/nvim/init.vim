@@ -54,7 +54,7 @@ let g:airline_powerline_fonts = 1
 " GNvim settings
 set guicursor+=a:blinkon333
 set guifont=Iosevka\ Extrabold:h11
-"
+
 set number
 set encoding=UTF-8
 set background=dark
