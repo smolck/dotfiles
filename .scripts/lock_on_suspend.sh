@@ -2,10 +2,11 @@
 
 B='#00000000'  # blank
 C='#ffffff22'  # clear ish
-D='#63f2f1aa'  # default
-T='#63f2f1aa'  # text
+D='#100e23CC'  # default
+T='#100e23CC'  # text
 W='#cbe3e7aa'  # wrong
-V='#63f2f1aa'  # verifying
+V='#100e23CC'  # verifying
+IN='#a6b3ccCC'
 
 i3lock \
 -n \
@@ -15,9 +16,9 @@ i3lock \
 --insidewrongcolor=$C \
 --ringwrongcolor=$W   \
 \
---insidecolor=$B      \
+--insidecolor=$C    \
 --ringcolor=$D        \
---linecolor=$B        \
+--linecolor=$C       \
 --separatorcolor=$D   \
 \
 --verifcolor=$T        \
@@ -33,4 +34,4 @@ i3lock \
 --indicator           \
 --timestr="%H:%M:%S"  \
 --datestr="%A, %m %Y" \
---keylayout 2
+--keylayout 2 \
