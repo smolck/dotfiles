@@ -31,9 +31,9 @@ while true; do
         #    echo " $UPDATES Updates"
         #else
         if (( UPDATES == 1 )); then
-            echo " $UPDATES"
+            echo " $UPDATES"
         elif (( UPDATES > 1 )); then
-            echo " $UPDATES"
+            echo " $UPDATES"
         else
             echo $BAR_ICON
         fi
