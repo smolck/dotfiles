@@ -5,11 +5,19 @@ Plug 'ncm2/ncm2'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-path'
 Plug 'roxma/nvim-yarp'
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'ncm2/ncm2-vim-lsp'
+Plug 'udalov/kotlin-vim'
+
+Plug 'tyrannicaltoucan/vim-quantum'
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
+Plug 'kristijanhusak/vim-hybrid-material'
+Plug 'reedes/vim-colors-pencil'
+
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+
 Plug 'vim-airline/vim-airline'
-Plug 'vhakulinen/gnvim-lsp'
 Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
 Plug 'sheerun/vim-polyglot'
 
@@ -28,6 +36,8 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'ctrlpvim/ctrlp.vim'
 
 Plug 'kassio/neoterm'
+Plug 'Lenovsky/nuake'
+
 Plug 'neomake/neomake'
 
 Plug 'airblade/vim-gitgutter'
@@ -42,18 +52,24 @@ call plug#end()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""" General Settings """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Remap leader key
 let mapleader = ";"
+let g:airline_powerline_fonts = 1
+let g:polyglot_disabled = ['kotlin']
+
 set textwidth=80
 set splitbelow
 set splitright
 
+set title
+
 cd $HOME " << Start nvim at home dir
-let g:airline_powerline_fonts = 1
 
 " GNvim settings
-set guicursor+=a:blinkon333
-set guifont=Iosevka\ Extrabold:h11
+if exists('g:gnvim')
+    set guicursor+=a:blinkon333
+    "set guifont=Iosevka\ Heavy:h11
+    set guifont=Fantasque\ Sans\ Mono\ Bold:h11
+endif
 
 set number
 set encoding=UTF-8
@@ -66,7 +82,7 @@ set autoindent
 set smartindent
 set relativenumber
 set autochdir
-if has('nvim') || has('termguicolors')
+if has('termguicolors')
     set termguicolors
 endif
 set expandtab
@@ -81,52 +97,30 @@ set nocompatible
 
 
 " For custom mappings
-filetype plugin on
 syntax enable
+filetype plugin on
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""" Autocomplete Settings """"""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Full config: when writing or reading a buffer, and on changes in insert and
-" normal mode (after 1s; no delay when writing).
 call neomake#configure#automake('nrwi', 500) " << Must be called after 'plug#end()'
+autocmd BufEnter * call ncm2#enable_for_buffer() " enable ncm2 for all buffers
+set completeopt=menuone,noinsert,noselect,preview
 
 " Required for operations modifying multiple buffers like rename.
 set hidden
 
-autocmd BufEnter * call ncm2#enable_for_buffer() " enable ncm2 for all buffers
-set completeopt=noinsert,menuone,noselect " IMPORTANT: :help Ncm2PopupOpen for more information
-
-" let g:LanguageClient_serverCommands = {
-"     \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-"     \ }
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+    \ 'python': ['~/.local/bin/pyls'],
+    \ 'cpp': ['clangd'],
+    \ 'go': ['~/go/bin/gopls'],
+    \ 'kotlin': ['kotlin-language-server'],
+    \ 'lua': ['~/.luarocks/bin/lua-lsp']
+    \ }
 
 let g:neomake_cpp_enabled_makers = ['clangd']
-
-if executable('clangd')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'clangd',
-        \ 'cmd': {server_info->['clangd', '-background-index']},
-        \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp'],
-        \ })
-endif
-if executable('rls')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'rls',
-        \ 'cmd': {server_info->['rustup', 'run', 'nightly', 'rls']},
-        \ 'workspace_config': {'rust': {'clippy-preference': 'on'}},
-        \ 'whitelist': ['rust'],
-        \ })
-endif
-if executable('pyls')
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'whitelist': ['python'],
-        \ })
-endif
-
 let python_highlight_all=1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""" Custom Mappings """"""""""""""""""""""""""""""""""""""""""""""""""""
@@ -138,6 +132,11 @@ func! DeleteTrailingWS()
   exe "normal `z"
 endfunc
 noremap <leader>w :call DeleteTrailingWS()<CR>
+
+" Nuake config
+nnoremap <Leader>t :Nuake<CR>
+inoremap <Leader>t <C-\><C-n>:Nuake<CR>
+tnoremap <Leader>t <C-\><C-n>:Nuake<CR>
 
 let g:strip_whitespace_on_save = 1
 let g:strip_max_file_size = 1000
@@ -190,7 +189,8 @@ cmap ,ter vs<CR><Esc>:terminal<CR><Esc>Areset<CR><Esc>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""" Customization """"""""""""""""""""""""""""""""""""""""""""""""""""
 
-colorscheme challenger_deep " << Must be called after plug#end
+colo pencil
+
 let g:airline#extensions#tabline#enabled = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
