@@ -5,8 +5,8 @@
 
 # Necessary for i3-gaps to work right.
 for_window [class="^.*"] border pixel 1
-gaps inner 15
-gaps outer 15
+gaps inner 20
+gaps outer 20
 
 # class                 border  backgr. text    indicator child_border
 client.focused          #4c7899 #4c7899 #4c7899 #4c7899   #a6b3cc
@@ -23,16 +23,22 @@ font pango:Iosevka\ Extrabold\ Italic 12
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1 "1"
-set $ws2 "2"
-set $ws3 "3"
-set $ws4 "4"
+set $ws1 "1: "
+set $ws2 "2: "
+set $ws3 "3: "
+set $ws4 "4: "
 set $ws5 "5"
 set $ws6 "6"
 set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
+
+assign [class="Chromium"] $ws2
+assign [class="Thunderbird"] $ws4
+
+for_window [class="Chromium"] focus
+for_window [class="Thunderbird"] focus
 
 # ------------------------------------------------------------------------------------------------------------------------
 
@@ -168,15 +174,11 @@ mode "resize" {
 
         # Pressing left will shrink the window’s width.
         # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.  Pressing down will grow the window’s height.  bindsym h resize shrink width 10 px or 10 ppt bindsym j resize grow height 10 px or 10 ppt
+        # Pressing up will shrink the window’s height.  Pressing down will grow the window’s height.
+        bindsym h resize shrink width 10 px or 10 ppt
+        bindsym j resize grow height 10 px or 10 ppt
         bindsym k resize shrink height 10 px or 10 ppt
         bindsym l resize grow width 10 px or 10 ppt
-
-        # same bindings, but for the arrow keys
-        #  bindsym Left resize shrink width 10 px or 10 ppt
-        #  bindsym Down resize grow height 10 px or 10 ppt
-        #  bindsym Up resize shrink height 10 px or 10 ppt
-        #  bindsym Right resize grow width 10 px or 10 ppt
 
         # back to normal: Enter or Escape or $mod+r
         bindsym Return mode "default"
@@ -188,7 +190,6 @@ bindsym $mod+r mode "resize"
 
 # --------------------------------------------------- StatusBar -----------------------------------------------------------
 
-exec_always --no-startup-id $HOME/.config/polybar/scripts/launch.sh
 # bar {
 #      colors {
 #         background #222222
@@ -216,5 +217,6 @@ exec_always --no-startup-id $HOME/.config/polybar/scripts/launch.sh
 
 # --------------------------------------------------- App/service execs ---------------------------------------------------
 
-# Set wallpaper and launch polybar
-exec --no-startup-id feh --bg-scale $HOME/pictures/Wallpapers/nebula
+# Set wallpaper
+exec --no-startup-id feh --bg-scale $HOME/pictures/Wallpapers/cool\ wolf\ wallpaper.jpg
+exec_always --no-startup-id $HOME/.config/polybar/scripts/launch.sh
