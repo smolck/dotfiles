@@ -1,14 +1,13 @@
 [options]
 mouse_autohide = true
 allow_bold = true
-font = Iosevka Extrabold Oblique 12
+font = Fantasque Sans Mono Bold 11
 clickable_url = true
 search_wrap = true
 
 [colors]
-background= rgba(0, 0, 0, 0.5)
 foreground=   #cbe3e7
-# background=   #1e1c31
+background=   #212121
 cursorColor=  #fbfcfc
 
 color0=       #565575
