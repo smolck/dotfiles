@@ -12,29 +12,14 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
-# autoload -Uz promptinit
-# promptinit
-# prompt fade blue black
+autoload -Uz promptinit
+promptinit
+prompt clint
 
 alias ls="ls --color=auto"
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 export EDITOR=nvim
 
-function powerline_precmd() {
-    PS1="$(powerline-shell --shell zsh $?)"
-}
-
-function install_powerline_precmd() {
-  for s in "${precmd_functions[@]}"; do
-    if [ "$s" = "powerline_precmd" ]; then
-      return
-    fi
-  done
-  precmd_functions+=(powerline_precmd)
-}
-
-if [ "$TERM" != "linux" ]; then
-    install_powerline_precmd
-fi
-
-neofetch
+# For Java apps on Wayland to work
+# export _JAVA_AWT_WM_NONREPARENTING=1
+export XDG_CONFIG_HOME="$HOME/.config"
