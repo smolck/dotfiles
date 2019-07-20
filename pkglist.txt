@@ -7,6 +7,7 @@ awesome-terminal-fonts
 bash
 binutils
 bison
+bleachbit
 bzip2
 chromium
 clang
@@ -27,6 +28,7 @@ findutils
 firefox
 flex
 freeglut
+fuse2
 gawk
 gcc
 gcc-libs
@@ -34,6 +36,7 @@ gettext
 git
 glibc
 glu
+go
 grep
 groff
 gzip
@@ -66,6 +69,7 @@ mplayer
 nano
 neofetch
 neovim-nightly
+nerd-fonts-iosevka
 netctl
 networkmanager
 otf-fira-code
@@ -74,6 +78,7 @@ patch
 pciutils
 perl
 pkgconf
+polybar-git
 procps-ng
 psmisc
 pulseaudio
@@ -117,7 +122,6 @@ qt5-websockets
 qt5-webview
 qt5-x11extras
 qt5-xmlpatterns
-racket
 ranger
 reiserfsprogs
 rofi
@@ -150,4 +154,5 @@ xfsprogs
 xorg-server
 xorg-xinit
 xorg-xrandr
+yay
 zsh
