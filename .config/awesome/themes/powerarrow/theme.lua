@@ -16,28 +16,36 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow"
-theme.wallpaper                                 = os.getenv("HOME") .. "/pictures/Wallpapers/cool wolf wallpaper.jpg"
+theme.wallpaper                                 = os.getenv("HOME") .. "/pictures/Wallpapers/abstractwolf.jpeg"
 theme.font                                      = "Fantasque Sans Mono Bold Italic 10" -- Previously: "xos4 Terminus 9"
 theme.fg_normal                                 = "#FEFEFE"
 theme.fg_focus                                  = "#32D6FF"
 theme.fg_urgent                                 = "#C83F11"
-theme.bg_normal                                 = "#212121" -- "#100e23" -- "#222222"
+theme.bg_normal                                 = "000000" -- "#282c34"
 theme.bg_focus                                  = "#1E2320"
 theme.bg_urgent                                 = "#3F3F3F"
 theme.taglist_fg_focus                          = "#00CCFF"
 theme.taglist_bg_focus                          = theme.bg_normal
-theme.tasklist_bg_focus                         = "#212121" -- "#100e23" -- "#222222"
+theme.tasklist_bg_focus                         = theme.bg_normal -- "#212121" -- "#100e23" -- "#222222"
 theme.tasklist_fg_focus                         = theme.fg_normal -- "#00CCFF"
+theme.border_radius                             = dpi(3)
 theme.border_width                              = dpi(2)
 theme.border_normal                             = "#3F3F3F"
 theme.border_focus                              = "#6F6F6F"
 theme.border_marked                             = "#CC9393"
+
+
+-- theme.xcolor8     = xrdb.color8     or "#465463"
+
+theme.titlebar_bg = "#100e23"
+theme.titlebar_fg = theme.fg_focus
 theme.titlebar_bg_focus                         = "#100e23" -- "#3F3F3F"
 theme.titlebar_bg_normal                        = "#3F3F3F"
 theme.titlebar_bg_focus                         = theme.bg_focus
 theme.titlebar_bg_normal                        = theme.bg_normal
 theme.titlebar_fg_focus                         = theme.fg_focus
-theme.menu_height                               = dpi(16)
+
+theme.menu_height                               = dpi(18)
 theme.menu_width                                = dpi(140)
 theme.menu_submenu_icon                         = theme.dir .. "/icons/submenu.png"
 theme.awesome_icon                              = theme.dir .. "/icons/awesome.png"
@@ -101,11 +109,16 @@ theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/
 
 --theme.color0 = "#565575"
 theme.color0 = theme.bg_normal
---theme.color8 = "#100e23"
-theme.color8 = "#005F87"
+theme.color8 = "grey"
 
 local markup = lain.util.markup
 local separators = lain.util.separators
+
+-- Redshift Temp (not necessarily the true temp if manually set,
+-- mainly used to run a script).
+-- local env_home = os.getenv("HOME")
+-- local redshift_widget = awful.widget.watch(env_home .. "/.scripts/change_color_temp")
+-- redshift_widget.font = theme.font
 
 -- Clock
 os.setlocale(os.getenv("LANG")) -- to localize the clock
@@ -222,9 +235,11 @@ theme.fs = lain.widget.fs({
 local baticon = wibox.widget.imagebox(theme.widget_battery)
 local bat = lain.widget.bat({
     settings = function()
+        local bat_percentage = io.popen("$HOME/.scripts/battery"):read()
+
         if bat_now.status and bat_now.status ~= "N/A" then
             if bat_now.ac_status == 1 then
-                widget:set_markup(markup.font(theme.font, " AC "))
+                widget:set_markup(markup.font(theme.font, " AC " .. bat_percentage))
                 baticon:set_image(theme.widget_ac)
                 return
             elseif not bat_now.perc and tonumber(bat_now.perc) <= 5 then
@@ -234,9 +249,9 @@ local bat = lain.widget.bat({
             else
                 baticon:set_image(theme.widget_battery)
             end
-            widget:set_markup(markup.font(theme.font, " " .. bat_now.perc .. "% -> " .. bat_now.time .. "H"))
+            widget:set_markup(markup.font(theme.font, " " .. bat_percentage))
         else
-            widget:set_markup(markup.font(theme.font, " " .. bat_now.perc .. "%"))
+            widget:set_markup(markup.font(theme.font, " " .. bat_percentage))
             baticon:set_image(theme.widget_ac)
         end
     end
@@ -288,7 +303,7 @@ function theme.powerline_rl(cr, width, height)
 end
 
 local function pl(widget, bgcolor, padding)
-    return wibox.container.background(wibox.container.margin(widget, dpi(16), dpi(16)), bgcolor, theme.powerline_rl)
+    return wibox.container.background(wibox.container.margin(widget, dpi(20), dpi(20)), bgcolor, theme.powerline_rl)
 end
 
 function theme.at_screen_connect(s)
@@ -324,7 +339,7 @@ function theme.at_screen_connect(s)
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(18), bg = theme.bg_normal, fg = theme.fg_normal })
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(24), bg = theme.bg_normal, fg = theme.fg_normal })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -361,7 +376,10 @@ function theme.at_screen_connect(s)
             -- arrow(theme.bg_normal, "#63f2f1"),
             -- wibox.container.background(wibox.container.margin(task, dpi(3), dpi(7)), "#63f2f1"),
 
-             arrow(theme.bg_normal, theme.color0),
+             -- arrow(theme.bg_normal, theme.color8),
+             -- wibox.container.background(wibox.container.margin(redshift_widget, dpi(6), dpi(3)), theme.color8),
+
+             -- arrow(theme.color8, theme.color0),
              wibox.container.background(wibox.container.margin(wibox.widget { memicon, mem.widget, layout = wibox.layout.align.horizontal }, dpi(2), dpi(3)), theme.color0),
 
              arrow(theme.color0, theme.color8),
@@ -377,16 +395,15 @@ function theme.at_screen_connect(s)
 
              --arrow("#CB755B", "#8DAA9A"),
              arrow(theme.color8, theme.color0),
-             wibox.container.background(wibox.container.margin(wibox.widget { baticon, bat.widget, layout = wibox.layout.align.horizontal }, dpi(3), dpi(3)), theme.color0),
+             wibox.container.background(wibox.container.margin(wibox.widget { baticon, bat.widget, layout = wibox.layout.align.horizontal }, dpi(3), dpi(12)), theme.color0),
 
              --arrow("#8DAA9A", "#C0C0A2"),
              arrow(theme.color0, theme.color8),
-             wibox.container.background(wibox.container.margin(wibox.widget { essid, net.widget, layout = wibox.layout.align.horizontal }, dpi(20), dpi(20)), theme.color8),
+             wibox.container.background(wibox.container.margin(wibox.widget { essid, net.widget, layout = wibox.layout.align.horizontal }, dpi(12), dpi(12)), theme.color8),
 
              --arrow("#C0C0A2", "#100e23"),
              arrow(theme.color8, theme.color0),
              wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), theme.color0),
-
 
              --arrow("#100e23", "alpha"),
              arrow(theme.color0, "alpha"),
