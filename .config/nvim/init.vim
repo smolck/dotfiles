@@ -1,22 +1,29 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""" Plug-ins """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call plug#begin()
 
-" Plug 'jiangmiao/auto-pairs'
+Plug 'dart-lang/dart-vim-plugin'
+
+Plug 'gruvbox-community/gruvbox'
+Plug 'joshdick/onedark.vim'
+
+Plug 'neovim/nvim-lsp'
+
+Plug 'bakpakin/fennel.vim'
+Plug 'jaawerth/fennel-nvim', {'branch': 'dev'}
+
 Plug 'ncm2/ncm2-cssomni'
 Plug 'ncm2/ncm2-tern',  {'do': 'npm install'}
 Plug 'clojure-vim/async-clj-omni'
 Plug 'tpope/vim-fireplace'
+
+Plug 'shlomif/vim-extract-variable'
 
 " Floating-window-utilizing plugins.
 Plug 'rhysd/git-messenger.vim'
 Plug 'voldikss/vim-floaterm'
 Plug 'ncm2/float-preview.nvim'
 
-Plug 'OmniSharp/omnisharp-vim'
-
 Plug 'sbdchd/neoformat'
-
-Plug 'ryanoasis/vim-devicons'
 
 Plug 'sainnhe/gruvbox-material'
 
@@ -24,7 +31,6 @@ Plug 'ncm2/ncm2'
 Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-path'
 Plug 'roxma/nvim-yarp'
-" Plug 'udalov/kotlin-vim'
 
 Plug 'Yggdroot/indentLine'
 Plug 'mhinz/vim-startify'
@@ -49,7 +55,6 @@ function! BuildComposer(info)
   endif
 endfunction
 
-Plug 'euclio/vim-markdown-composer', { 'do': function('BuildComposer') }
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'ctrlpvim/ctrlp.vim'
 
@@ -64,74 +69,18 @@ Plug 'vimwiki/vimwiki'
 
 call plug#end()
 
+luafile ~/.config/nvim/init.lua
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""" General Settings """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-let g:floaterm_position = 'center'
-let g:floaterm_width = &columns/2
-
-let g:OmniSharp_server_stdio = 1
-let g:OmniSharp_highlight_types = 2
-let g:OmniSharp_timeout = 5
-
-let mapleader = ";"
-let g:airline_powerline_fonts = 1
-" let g:polyglot_disabled = ['kotlin']
-
-set textwidth=80
-set splitbelow
-set splitright
-
-set title
-
-set ignorecase
-
-cd $HOME " << Start nvim at home dir
-
 " GNvim settings
 if exists('g:gnvim') || exists('g:fvim_loaded')
-    set guicursor+=a:blinkon333
-    " set guifont=Fantasque\ Sans\ Mono\ Bold:h11
-    set guifont=Iosevka\ Extrabold:h16
-
+    set guicursor += a:blinkon333
     " call gnvim#tabline#disable()
 endif
-
-if exists('g:fvim_loaded')
-    set guifont=Iosevka\ Extrabold:h20
-    FVimCursorSmoothMove v:true
-
-    FVimCursorSmoothBlink v:true
-endif
-
-set number
-set encoding=UTF-8
-set background=dark
-set path+=**
-set wildmenu
-
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
-
-set expandtab
-set smarttab
-set autoindent
-
-set relativenumber
-set autochdir
-if has('termguicolors')
-    set termguicolors
-endif
-set hlsearch
-set smartcase
-set cursorline
-set linebreak
-set wrap
-set lazyredraw
-set nocompatible
-
 
 " For custom mappings
 syntax enable
@@ -148,24 +97,33 @@ set completeopt=menuone,noinsert,noselect
 
 " Required for operations modifying multiple buffers like rename.
 set hidden
+autocmd Filetype dart,rust,python,go,c,cpp setl omnifunc=lsp#omnifunc
+" setl omnifunc=lsp#omnifunc
+autocmd Filetype fennel setl omnifunc=fnl#omniComplete
+autocmd Filetype lua setl omnifunc=fnl#omniCompleteLua
 
-" \ 'haskell': ['hie-wrapper'],
-let g:LanguageClient_serverCommands = {
-    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-    \ 'python': ['~/.local/bin/pyls'],
-    \ 'cpp': ['clangd'],
-    \ 'kotlin': ['kotlin-language-server'],
-    \ 'lua': ['~/.luarocks/bin/lua-lsp'],
-    \ 'go': ['$GOPATH/bin/gopls'],
-    \ 'javascript': ['javascript-typescript-stdio'],
-    \ 'typescript': ['javascript-typescript-stdio'],
-    \ 'reason': ['$HOME/dev/reason-ls/rls-linux/reason-language-server'],
-    \ 'ocaml': ['ocaml-language-server', 'stdio'],
-    \ 'scala': ['~/dev/scala/metals-vim'],
-    \ 'sbt': ['~/dev/scala/metals-vim'],
-    \ 'dart': ['dart', '/opt/dart-sdk-dev/bin/snapshots/analysis_server.dart.snapshot', '--lsp']
-    \ }
-    " \ 'reason': ['~/dev/reason-ls/rls-linux/reason-language-server'],
+" call lsp#add_filetype_config({
+    " \   'filetype': 'scala',
+    " \   'name': 'scala-metals',
+    " \   'cmd': '$HOME/dev/scala/metals-vim'
+    " \ })
+" call lsp#add_filetype_config({
+   " \   'filetype': 'sbt',
+   " \   'name': 'sbt-metals',
+   " \   'cmd': '$HOME/dev/scala/metals-vim'
+   " \ })
+" call lsp#add_filetype_config({
+    " \   'filetype': 'dart',
+    " \   'name': 'dart-analysis-server',
+    " \   'cmd':  ['dart', '/opt/dart-sdk-dev/bin/snapshots/analysis_server.dart.snapshot', '--lsp'],
+    " \   'init_options': {'onlyAnalyzeProjectsWithOpenFiles': v:true}
+    " \ })
+
+" \ 'ocaml': ['ocaml-language-server', 'stdio'],
+
+" let g:LanguageClient_serverCommands = {
+    " \ 'dart': ['dart', '/opt/dart-sdk-dev/bin/snapshots/analysis_server.dart.snapshot', '--lsp']
+    " \ }
 
 let g:neomake_cpp_enabled_makers = ['clangd']
 let python_highlight_all=1
@@ -182,6 +140,8 @@ func! DeleteTrailingWS()
 endfunc
 noremap <leader>w :call DeleteTrailingWS()<CR>
 
+au FocusGained * checktime
+
 " GitMessenger remap
 nnoremap <Leader>git :GitMessenger<CR>
 
@@ -192,15 +152,32 @@ tnoremap <Leader>t <C-\><C-n>:FloatermToggle<CR>
 
 " tnoremap <Leader>api :new|put =map(filter(api_info().functions, '!has_key(v:val,''deprecated_since'')'), 'v:val.name')
 
+nnoremap <Up> :lua jump(0)<CR>
+nnoremap <Right> :lua move_forward(0)<CR>
+
+function! SynStack()
+    if !exists('*synstack')
+        return
+    endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunction
+nnoremap ? :call SynStack()<CR>
+
+function! ClearThings()
+    echo ""
+endfunction
+
+nnoremap <Leader>cc :call ClearThings()<CR>
+
 let g:strip_whitespace_on_save = 1
 let g:strip_max_file_size = 1000
 let g:strip_whitespace_confirm = 0
 
 " No arrow keys
-noremap <Up> <nop>
+" noremap <Up> <nop>
 noremap <Down> <nop>
 noremap <Left> <nop>
-noremap <Right> <nop>
+" noremap <Right> <nop>
 
 inoremap <Up> <nop>
 inoremap <Down> <nop>
@@ -261,6 +238,7 @@ nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 let g:onedark_terminal_italics = 1
 " set bg=light
 colo gruvbox-material
+" colo onedark
 let gruvbox_material_background = 'soft'
 
 " For switching colorschemes depending on time of day.
@@ -289,7 +267,7 @@ let g:lightline = {
     \   'left': [ [ 'bufferinfo' ],
     \             [ 'separator' ],
     \             [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
-    \   'right': [ [ 'close' ], ],
+    \   'right': [ [ 'tabs', 'close' ], ],
     \ },
     \   'active': {
     \     'left': [ [ 'mode', 'paste' ],
@@ -379,3 +357,5 @@ let g:lightline_buffer_reservelen = 20
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set rtp+=<SHARE_DIR>/merlin/vim
+
+" luafile ~/.config/nvim/test.lua
