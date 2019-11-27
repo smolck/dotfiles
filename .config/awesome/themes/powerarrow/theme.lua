@@ -1,7 +1,6 @@
 --[[
 
-     Powerarrow Awesome WM theme
-     github.com/lcpz
+    Derived from "Powerarrow Awesome WM theme", see github.com/lcpz
 
 --]]
 
@@ -16,30 +15,27 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 
 local theme                                     = {}
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/powerarrow"
-theme.wallpaper                                 = os.getenv("HOME") .. "/pictures/Wallpapers/abstractwolf.jpeg"
-theme.font                                      = "Fantasque Sans Mono Bold Italic 10" -- Previously: "xos4 Terminus 9"
+theme.wallpaper                                 = os.getenv("HOME") .. "/pictures/Wallpapers/cool wolf wallpaper.jpg"
+theme.font                                      = "Iosevka Heavy 12"
 theme.fg_normal                                 = "#FEFEFE"
 theme.fg_focus                                  = "#32D6FF"
 theme.fg_urgent                                 = "#C83F11"
-theme.bg_normal                                 = "000000" -- "#282c34"
+theme.bg_normal                                 = "gray"
 theme.bg_focus                                  = "#1E2320"
 theme.bg_urgent                                 = "#3F3F3F"
 theme.taglist_fg_focus                          = "#00CCFF"
-theme.taglist_bg_focus                          = theme.bg_normal
-theme.tasklist_bg_focus                         = theme.bg_normal -- "#212121" -- "#100e23" -- "#222222"
-theme.tasklist_fg_focus                         = theme.fg_normal -- "#00CCFF"
+theme.taglist_bg_focus                          = "gray"
+theme.tasklist_bg_focus                         = "gray"
+theme.tasklist_fg_focus                         = theme.fg_normal
 theme.border_radius                             = dpi(3)
 theme.border_width                              = dpi(2)
 theme.border_normal                             = "#3F3F3F"
 theme.border_focus                              = "#6F6F6F"
 theme.border_marked                             = "#CC9393"
 
-
--- theme.xcolor8     = xrdb.color8     or "#465463"
-
-theme.titlebar_bg = "#100e23"
-theme.titlebar_fg = theme.fg_focus
-theme.titlebar_bg_focus                         = "#100e23" -- "#3F3F3F"
+theme.titlebar_bg 				= "#100e23"
+theme.titlebar_fg 				= theme.fg_focus
+theme.titlebar_bg_focus                         = "#100e23"
 theme.titlebar_bg_normal                        = "#3F3F3F"
 theme.titlebar_bg_focus                         = theme.bg_focus
 theme.titlebar_bg_normal                        = theme.bg_normal
@@ -107,18 +103,11 @@ theme.titlebar_maximized_button_normal_active   = theme.dir .. "/icons/titlebar/
 theme.titlebar_maximized_button_focus_inactive  = theme.dir .. "/icons/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_inactive = theme.dir .. "/icons/titlebar/maximized_normal_inactive.png"
 
---theme.color0 = "#565575"
-theme.color0 = theme.bg_normal
-theme.color8 = "grey"
+theme.color0 = "gray" -- theme.bg_normal
+theme.color8 = theme.color0
 
 local markup = lain.util.markup
 local separators = lain.util.separators
-
--- Redshift Temp (not necessarily the true temp if manually set,
--- mainly used to run a script).
--- local env_home = os.getenv("HOME")
--- local redshift_widget = awful.widget.watch(env_home .. "/.scripts/change_color_temp")
--- redshift_widget.font = theme.font
 
 -- Clock
 os.setlocale(os.getenv("LANG")) -- to localize the clock
@@ -130,7 +119,7 @@ theme.cal = lain.widget.cal({
     --cal = "cal --color=always",
     attach_to = { textclock },
     notification_preset = {
-        font = "Iosevka Extrabold Italic 10", -- Previously: "xos4 Terminus 10",
+        font = "Iosevka Heavy 10",
         fg   = theme.fg_normal,
         bg   = theme.bg_normal
     }
@@ -150,40 +139,6 @@ theme.volume = lain.widget.alsabar({
     notification_preset = { font = "xos4 Terminus 10", fg = theme.fg_normal },
 })
 
--- MPD
-local musicplr = awful.util.terminal .. " -title Music -g 130x34-320+16 -e ncmpcpp"
-local mpdicon = wibox.widget.imagebox(theme.widget_music)
-mpdicon:buttons(my_table.join(
-    awful.button({ modkey }, 1, function () awful.spawn.with_shell(musicplr) end),
-    awful.button({ }, 1, function ()
-        os.execute("mpc prev")
-        theme.mpd.update()
-    end),
-    awful.button({ }, 2, function ()
-        os.execute("mpc toggle")
-        theme.mpd.update()
-    end),
-    awful.button({ }, 3, function ()
-        os.execute("mpc next")
-        theme.mpd.update()
-    end)))
-theme.mpd = lain.widget.mpd({
-    settings = function()
-        if mpd_now.state == "play" then
-            artist = " " .. mpd_now.artist .. " "
-            title  = mpd_now.title  .. " "
-            mpdicon:set_image(theme.widget_music_on)
-            widget:set_markup(markup.font(theme.font, markup("#FF8466", artist) .. " " .. title))
-        elseif mpd_now.state == "pause" then
-            widget:set_markup(markup.font(theme.font, " mpd paused "))
-            mpdicon:set_image(theme.widget_music_pause)
-        else
-            widget:set_text("")
-            mpdicon:set_image(theme.widget_music)
-        end
-    end
-})
-
 -- MEM
 local memicon = wibox.widget.imagebox(theme.widget_mem)
 local mem = lain.widget.mem({
@@ -200,23 +155,11 @@ local cpu = lain.widget.cpu({
     end
 })
 
---[[ Coretemp (lm_sensors, per core)
-local tempwidget = awful.widget.watch({awful.util.shell, '-c', 'sensors | grep Core'}, 30,
-function(widget, stdout)
-    local temps = ""
-    for line in stdout:gmatch("[^\r\n]+") do
-        temps = temps .. line:match("+(%d+).*°C")  .. "° " -- in Celsius
-    end
-    widget:set_markup(markup.font(theme.font, " " .. temps))
-end)
---]]
--- Coretemp (lain, average)
 local temp = lain.widget.temp({
     settings = function()
         widget:set_markup(markup.font(theme.font, " " .. coretemp_now .. "°C "))
     end
 })
---]]
 local tempicon = wibox.widget.imagebox(theme.widget_temp)
 
 -- / fs
@@ -272,7 +215,7 @@ local net = lain.widget.net({
 
 -- Brigtness
 local brighticon = wibox.widget.imagebox(theme.widget_brightness)
--- If you use xbacklight, comment the line with "light -G" and uncomment the line bellow
+-- If you use xbacklight, comment the line with "light -G" and uncomment the line below
 -- local brightwidget = awful.widget.watch('xbacklight -get', 0.1,
 local brightwidget = awful.widget.watch('light -G', 0.1,
     function(widget, stdout, stderr, exitreason, exitcode)
@@ -282,29 +225,6 @@ end)
 
 -- Separators
 local arrow = separators.arrow_left
-
-function theme.powerline_rl(cr, width, height)
-    local arrow_depth, offset = height/2, 0
-
-    -- Avoid going out of the (potential) clip area
-    if arrow_depth < 0 then
-        width  =  width + 2*arrow_depth
-        offset = -arrow_depth
-    end
-
-    cr:move_to(offset + arrow_depth         , 0        )
-    cr:line_to(offset + width               , 0        )
-    cr:line_to(offset + width - arrow_depth , height/2 )
-    cr:line_to(offset + width               , height   )
-    cr:line_to(offset + arrow_depth         , height   )
-    cr:line_to(offset                       , height/2 )
-
-    cr:close_path()
-end
-
-local function pl(widget, bgcolor, padding)
-    return wibox.container.background(wibox.container.margin(widget, dpi(20), dpi(20)), bgcolor, theme.powerline_rl)
-end
 
 function theme.at_screen_connect(s)
     -- Quake application
@@ -356,58 +276,62 @@ function theme.at_screen_connect(s)
             layout = wibox.layout.fixed.horizontal,
             wibox.widget.systray(),
 
-            --[[ using shapes
-            pl(task, "#343434"),
-            --pl(wibox.widget { mailicon, mail and theme.mail.widget, layout = wibox.layout.align.horizontal }, "#343434"),
-            pl(wibox.widget { memicon, mem.widget, layout = wibox.layout.align.horizontal }, "#777E76"),
-            pl(wibox.widget { cpuicon, cpu.widget, layout = wibox.layout.align.horizontal }, "#4B696D"),
-            pl(wibox.widget { tempicon, temp.widget, layout = wibox.layout.align.horizontal }, "#4B3B51"),
-            --pl(wibox.widget { fsicon, theme.fs and theme.fs.widget, layout = wibox.layout.align.horizontal }, "#CB755B"),
-            pl(wibox.widget { baticon, bat.widget, layout = wibox.layout.align.horizontal }, "#8DAA9A"),
-            pl(wibox.widget { neticon, net.widget, layout = wibox.layout.align.horizontal }, "#C0C0A2"),
-            pl(textclock, "#777E76"),
-            -]]
+            -- MEM
+            wibox.container.background(
+                wibox.container.margin(
+                    wibox.widget { memicon, mem.widget, layout = wibox.layout.align.horizontal },
+                    dpi(2),
+                    dpi(3)),
+                theme.color0),
 
-            -- using separators
-            -- arrow(theme.bg_normal, "#343434"),
-            -- wibox.container.background(wibox.container.margin(wibox.widget { mailicon, theme.mail and theme.mail.widget, layout = wibox.layout.align.horizontal }, dpi(4), dpi(7)), "#343434"),
-            -- arrow("#343434", theme.bg_normal),
-            -- wibox.container.background(wibox.container.margin(wibox.widget { mpdicon, theme.mpd.widget, layout = wibox.layout.align.horizontal }, dpi(3), dpi(6)), theme.bg_focus),
-            -- arrow(theme.bg_normal, "#63f2f1"),
-            -- wibox.container.background(wibox.container.margin(task, dpi(3), dpi(7)), "#63f2f1"),
+            -- CPU
+            wibox.container.background(
+                wibox.container.margin(
+                    wibox.widget { cpuicon, cpu.widget, layout = wibox.layout.align.horizontal },
+                    dpi(3),
+                    dpi(4)),
+                theme.color8),
 
-             -- arrow(theme.bg_normal, theme.color8),
-             -- wibox.container.background(wibox.container.margin(redshift_widget, dpi(6), dpi(3)), theme.color8),
+            -- Temp
+            wibox.container.background(
+                wibox.container.margin(
+                    wibox.widget { tempicon, temp.widget, layout = wibox.layout.align.horizontal },
+                    dpi(4),
+                    dpi(4)),
+                theme.color0),
 
-             -- arrow(theme.color8, theme.color0),
-             wibox.container.background(wibox.container.margin(wibox.widget { memicon, mem.widget, layout = wibox.layout.align.horizontal }, dpi(2), dpi(3)), theme.color0),
+            -- Filesystem
+            wibox.container.background(
+                wibox.container.margin(
+                    wibox.widget { fsicon, theme.fs and theme.fs.widget, layout = wibox.layout.align.horizontal },
+                    dpi(10),
+                    dpi(10)),
+                theme.color8),
 
-             arrow(theme.color0, theme.color8),
-             wibox.container.background(wibox.container.margin(wibox.widget { cpuicon, cpu.widget, layout = wibox.layout.align.horizontal }, dpi(3), dpi(4)), theme.color8),
+            -- Battery
+            wibox.container.background(
+                wibox.container.margin(
+                    wibox.widget { baticon, bat.widget, layout = wibox.layout.align.horizontal },
+                    dpi(3),
+                    dpi(12)),
+                theme.color0),
 
-             --arrow("#4B696D", "#4B3B51"),
-             arrow(theme.color8, theme.color0),
-             wibox.container.background(wibox.container.margin(wibox.widget { tempicon, temp.widget, layout = wibox.layout.align.horizontal }, dpi(4), dpi(4)), theme.color0),
+            -- Network
+            wibox.container.background(
+                wibox.container.margin(
+                    wibox.widget { essid, net.widget, layout = wibox.layout.align.horizontal },
+                    dpi(12),
+                    dpi(12)),
+                theme.color8),
 
-             --arrow("#4B3B51", "#CB755B"),
-             arrow(theme.color0, theme.color8),
-             wibox.container.background(wibox.container.margin(wibox.widget { fsicon, theme.fs and theme.fs.widget, layout = wibox.layout.align.horizontal }, dpi(10), dpi(10)), theme.color8),
+            -- Clock
+            wibox.container.background(
+                wibox.container.margin(
+                    textclock,
+                    dpi(4),
+                    dpi(8)),
+                theme.color0),
 
-             --arrow("#CB755B", "#8DAA9A"),
-             arrow(theme.color8, theme.color0),
-             wibox.container.background(wibox.container.margin(wibox.widget { baticon, bat.widget, layout = wibox.layout.align.horizontal }, dpi(3), dpi(12)), theme.color0),
-
-             --arrow("#8DAA9A", "#C0C0A2"),
-             arrow(theme.color0, theme.color8),
-             wibox.container.background(wibox.container.margin(wibox.widget { essid, net.widget, layout = wibox.layout.align.horizontal }, dpi(12), dpi(12)), theme.color8),
-
-             --arrow("#C0C0A2", "#100e23"),
-             arrow(theme.color8, theme.color0),
-             wibox.container.background(wibox.container.margin(textclock, dpi(4), dpi(8)), theme.color0),
-
-             --arrow("#100e23", "alpha"),
-             arrow(theme.color0, "alpha"),
-            --]]
             s.mylayoutbox,
         },
     }

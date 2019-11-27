@@ -78,7 +78,7 @@ run_once({ "urxvtd", "unclutter -root" }) -- entries must be separated by commas
 local chosen_theme = "powerarrow"
 local modkey       = "Mod4"
 local altkey       = "Mod1"
-local terminal     = "kitty"
+local terminal     = "alacritty"
 local editor       = os.getenv("EDITOR") or "nvim"
 local gui_editor   = "gnvim"
 local browser      = "brave"
