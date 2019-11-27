@@ -31,9 +31,9 @@ local function init_lsps()
         }
     }
 
-    --[[ nvim_lsp.dart_analyzer.setup {
+    nvim_lsp.dart_analyzer.setup {
         on_attach = language_client_setup;
-    } --]]
+    }
 end
 
 local function init_globals()
@@ -63,6 +63,7 @@ local function init_options()
       smarttab           = true;
       autoindent         = true;
 
+      number             = true;
       relativenumber     = true;
       autochdir          = true;
       hlsearch           = true;
