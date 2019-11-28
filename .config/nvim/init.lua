@@ -12,6 +12,7 @@ local nvim_options = setmetatable({}, {
     end
   });
 
+-- Config for LSPs {{{
 local function init_lsps()
     nvim_lsp.pyls.setup { {} }
     nvim_lsp.rls.setup {
@@ -35,7 +36,9 @@ local function init_lsps()
         on_attach = language_client_setup;
     }
 end
+-- }}}
 
+-- Globals {{{
 local function init_globals()
     vim.g.startify_custom_header_quotes             = {{ os.getenv('VERSEOFDAY') }}
     vim.g.polyglot_disabled                         = { 'dart' }
@@ -46,7 +49,9 @@ local function init_globals()
     -- Colorscheme
     vim.g.colors_name                               = 'gruvbox-material'
 end
+-- }}}
 
+-- Lightline config {{{
 local function init_lightline()
     vim.g.lightline = {
         colorscheme = 'gruvbox_material';
@@ -79,8 +84,6 @@ local function init_lightline()
         separator = { left = '', right = '' };
         subseparator = { left = '', right = '' };
     }
-    -- Lightline-related Globals {{{
-
     -- Lightline-buffer UI settings
     vim.g.lightline_buffer_logo                     = ' '
     vim.g.lightline_buffer_readonly_icon            = ''
@@ -112,11 +115,15 @@ local function init_lightline()
 
     -- Reserve length for other componenet (e.g. info, close)
     vim.g.lightline_buffer_reservelen               = 20
-    -- }}}
 end
 
+-- }}}
+
+-- Options {{{
 local function init_options()
     local options = {
+      foldmethod         = 'marker';
+
       textwidth          = 80;
       splitbelow         = true;
       splitright         = true;
@@ -153,6 +160,7 @@ local function init_options()
 
     for k, v in pairs(options) do nvim_options[k] = v end
 end
+-- }}}
 
 init_globals()
 init_options()
