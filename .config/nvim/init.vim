@@ -35,11 +35,6 @@ Plug 'roxma/nvim-yarp'
 Plug 'Yggdroot/indentLine'
 Plug 'mhinz/vim-startify'
 
-Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
-
 Plug 'itchyny/lightline.vim'
 Plug 'taohexxx/lightline-buffer'
 
@@ -68,6 +63,20 @@ Plug 'tpope/vim-surround'
 Plug 'vimwiki/vimwiki'
 
 call plug#end()
+
+" Define these Lightline functions for use in Lightline. Must be
+" loaded before the `luafile ~/.config/nvim/init.lua` line AFAIK.
+function! LightlineReadonly()
+   return &readonly ? '' : ''
+endfunction
+
+function! LightlineFugitive()
+   if exists('*fugitive#head')
+   	let branch = fugitive#head()
+   	return branch !=# '' ? ''.branch : ''
+   endif
+   return ''
+endfunction
 
 luafile ~/.config/nvim/init.lua
 
@@ -101,29 +110,6 @@ autocmd Filetype dart,rust,python,go,c,cpp setl omnifunc=lsp#omnifunc
 " setl omnifunc=lsp#omnifunc
 autocmd Filetype fennel setl omnifunc=fnl#omniComplete
 autocmd Filetype lua setl omnifunc=fnl#omniCompleteLua
-
-" call lsp#add_filetype_config({
-    " \   'filetype': 'scala',
-    " \   'name': 'scala-metals',
-    " \   'cmd': '$HOME/dev/scala/metals-vim'
-    " \ })
-" call lsp#add_filetype_config({
-   " \   'filetype': 'sbt',
-   " \   'name': 'sbt-metals',
-   " \   'cmd': '$HOME/dev/scala/metals-vim'
-   " \ })
-" call lsp#add_filetype_config({
-    " \   'filetype': 'dart',
-    " \   'name': 'dart-analysis-server',
-    " \   'cmd':  ['dart', '/opt/dart-sdk-dev/bin/snapshots/analysis_server.dart.snapshot', '--lsp'],
-    " \   'init_options': {'onlyAnalyzeProjectsWithOpenFiles': v:true}
-    " \ })
-
-" \ 'ocaml': ['ocaml-language-server', 'stdio'],
-
-" let g:LanguageClient_serverCommands = {
-    " \ 'dart': ['dart', '/opt/dart-sdk-dev/bin/snapshots/analysis_server.dart.snapshot', '--lsp']
-    " \ }
 
 let g:neomake_cpp_enabled_makers = ['clangd']
 let python_highlight_all=1
@@ -233,129 +219,4 @@ nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""" Customization """"""""""""""""""""""""""""""""""""""""""""""""""""
-
-let g:onedark_terminal_italics = 1
-" set bg=light
-colo gruvbox-material
-" colo onedark
-let gruvbox_material_background = 'soft'
-
-" For switching colorschemes depending on time of day.
-" let hr = (strftime('%H'))
-" if hr >= 17
-"     set bg=dark
-" elseif hr >= 9
-"     set bg=light
-" elseif hr >= 0
-"     set bg=dark
-" endif
-
-" colo onedark
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""" Statusline (Lightline) """""""""""""""""""""""""""""""""""""""""""
-
-set hidden  " allow buffer switching without saving
-set showtabline=2  " always show tabline
-
-" use lightline-buffer in lightline
-let g:lightline = {
-    \ 'colorscheme': 'gruvbox_material',
-    \ 'tabline': {
-    \   'left': [ [ 'bufferinfo' ],
-    \             [ 'separator' ],
-    \             [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
-    \   'right': [ [ 'tabs', 'close' ], ],
-    \ },
-    \   'active': {
-    \     'left': [ [ 'mode', 'paste' ],
-    \             [ 'fugitive', 'readonly', 'filename', 'modified' ]
-    \     ]
-    \ },
-    \ 'component_expand': {
-    \   'buffercurrent': 'lightline#buffer#buffercurrent',
-    \   'bufferbefore': 'lightline#buffer#bufferbefore',
-    \   'bufferafter': 'lightline#buffer#bufferafter',
-    \ },
-    \ 'component_type': {
-    \   'buffercurrent': 'tabsel',
-    \   'bufferbefore': 'raw',
-    \   'bufferafter': 'raw',
-    \ },
-    \ 'component_function': {
-    \   'bufferinfo': 'lightline#buffer#bufferinfo',
-    \   'readonly': 'LightlineReadonly',
-    \   'fugitive': 'LightlineFugitive'
-    \ }
-    \ }
-
-let g:lightline.separator = {
-	\   'left': '', 'right': ''
-  \}
-let g:lightline.subseparator = {
-	\   'left': '', 'right': ''
-  \}
-
-
-function! LightlineReadonly()
-   return &readonly ? '' : ''
-endfunction
-
-function! LightlineFugitive()
-   if exists('*fugitive#head')
-   	let branch = fugitive#head()
-   	return branch !=# '' ? ''.branch : ''
-   endif
-   return ''
-endfunction
-
-" let g:airline_powerline_fonts = 1
-
-" lightline-buffer ui settings
-" replace these symbols with ascii characters if your environment does not support unicode
-let g:lightline_buffer_logo = ' '
-let g:lightline_buffer_readonly_icon = ''
-let g:lightline_buffer_modified_icon = '✭'
-let g:lightline_buffer_git_icon = ' '
-let g:lightline_buffer_ellipsis_icon = '..'
-let g:lightline_buffer_expand_left_icon = '◀ '
-let g:lightline_buffer_expand_right_icon = ' ▶'
-let g:lightline_buffer_active_buffer_left_icon = ''
-let g:lightline_buffer_active_buffer_right_icon = ''
-let g:lightline_buffer_separator_icon = '  '
-
-" enable devicons, only support utf-8
-" require <https://github.com/ryanoasis/vim-devicons>
-let g:lightline_buffer_enable_devicons = 1
-
-" lightline-buffer function settings
-let g:lightline_buffer_show_bufnr = 1
-
-" :help filename-modifiers
-let g:lightline_buffer_fname_mod = ':t'
-
-" hide buffer list
-let g:lightline_buffer_excludes = ['vimfiler']
-
-" max file name length
-let g:lightline_buffer_maxflen = 30
-
-" max file extension length
-let g:lightline_buffer_maxfextlen = 3
-
-" min file name length
-let g:lightline_buffer_minflen = 16
-
-" min file extension length
-let g:lightline_buffer_minfextlen = 3
-
-" reserve length for other component (e.g. info, close)
-let g:lightline_buffer_reservelen = 20
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 set rtp+=<SHARE_DIR>/merlin/vim
-
-" luafile ~/.config/nvim/test.lua
