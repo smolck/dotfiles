@@ -9,15 +9,17 @@ local valid_modes = {
 	-- :map! and :map
 	['!'] = '!'; [' '] = '';
 }
-
-
 LUA_MAPPING = {}
 
+-- Taken from
+-- https://github.com/norcalli/nvim_utils/blob/master/lua/nvim_utils.lua
 local function escape_keymap(key)
 	-- Prepend with a letter so it can be used as a dictionary key
 	return 'k'..key:gsub('.', string.byte)
 end
 
+-- Taken from
+-- https://github.com/norcalli/nvim_utils/blob/master/lua/nvim_utils.lua
 function helpers.nvim_apply_mappings(mappings, default_options)
 	-- May or may not be used.
 	local current_bufnr = vim.api.nvim_get_current_buf()
