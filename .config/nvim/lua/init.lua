@@ -58,63 +58,62 @@ vim.api.nvim_command [[
 
 -- Plugins {{{
 plug('~/.config/nvim/plugged', {
-  'neovim/nvim-lsp',
-
-  'tpope/vim-repeat',
-
-  'dart-lang/dart-vim-plugin',
-
-  'gruvbox-community/gruvbox',
-  'joshdick/onedark.vim',
-
-
+  'Vigemus/nvimux',
+  'Yggdroot/indentLine',
+  'airblade/vim-gitgutter',
   'bakpakin/fennel.vim',
-  {'jaawerth/fennel-nvim', branch = 'dev'},
-
-  'ncm2/ncm2-cssomni',
-  {'ncm2/ncm2-tern', ['do'] = 'npm install'},
   'clojure-vim/async-clj-omni',
-  'tpope/vim-fireplace',
-
-  'shlomif/vim-extract-variable',
-
-  -- Floating-window-utilizing plugins.
-  'rhysd/git-messenger.vim',
-  'voldikss/vim-floaterm',
+  'ctrlpvim/ctrlp.vim',
+  'dart-lang/dart-vim-plugin',
+  'gruvbox-community/gruvbox',
+  'itchyny/lightline.vim',
+  'joshdick/onedark.vim',
+  'mhinz/vim-startify',
   'ncm2/float-preview.nvim',
-
-  'sbdchd/neoformat',
-
-  'sainnhe/gruvbox-material',
-
   'ncm2/ncm2',
   'ncm2/ncm2-bufword',
+  'ncm2/ncm2-cssomni',
   'ncm2/ncm2-path',
-  'roxma/nvim-yarp',
-
-  'Yggdroot/indentLine',
-  'mhinz/vim-startify',
-
-  'itchyny/lightline.vim',
-  'taohexxx/lightline-buffer',
-
-  'sheerun/vim-polyglot',
-
+  'neovim/nvim-lsp',
   'ntpeters/vim-better-whitespace',
-  'ctrlpvim/ctrlp.vim',
-
-  'kassio/neoterm',
-
-  'neomake/neomake',
-
-  'airblade/vim-gitgutter',
+  'rhysd/git-messenger.vim',
+  'roxma/nvim-yarp',
+  'sainnhe/gruvbox-material',
+  'sbdchd/neoformat',
+  'sheerun/vim-polyglot',
+  'taohexxx/lightline-buffer',
+  'tpope/vim-fireplace',
   'tpope/vim-fugitive',
+  'tpope/vim-repeat',
   'tpope/vim-surround',
   'vimwiki/vimwiki',
+  {'jaawerth/fennel-nvim', branch = 'dev'},
+  {'ncm2/ncm2-tern', ['do'] = 'npm install'},
 })
 -- }}}
 
-vim.api.nvim_command("call neomake#configure#automake('nrwi', 500)")
+-- Nvimux Config {{{
+local nvimux = require 'nvimux'
+
+nvimux.config.set_all {
+  prefix = '<C-a>',
+  new_window = 'term',
+  new_tab = nil,
+  new_window_buffer = 'single',
+  quickterm_direction = 'botright',
+  quickterm_orientation = 'vertical',
+  quickterm_scope = 'g', -- Use 'g' for global quickterm
+  quickterm_size = '80',
+}
+
+nvimux.bindings.bind_all{
+  {'s', ':NvimuxHorizontalSplit', {'n', 'v', 'i', 't'}},
+  {'v', ':NvimuxVerticalSplit', {'n', 'v', 'i', 't'}},
+}
+
+nvimux.bootstrap()
+
+-- }}}
 
 -- Config for LSPs {{{
 local nvim_lsp  = require 'nvim_lsp'
@@ -280,7 +279,7 @@ local function init_options()
 
     -- Blink cursor if using GNvim.
     if vim.fn.exists('g:gnvim') then
-        options.guicursor = nvim_options.guicursor .. ',a:blinkon333'
+        -- options.guicursor = nvim_options.guicursor .. ',a:blinkon333'
     end
 
     -- for k, v in pairs(options) do nvim_options[k] = v end
@@ -338,11 +337,6 @@ end
 local function create_mappings()
     local mappings = {
         ['n<Leader>git'] = {':GitMessenger<CR>',               noremap = true},
-
-        -- Floaterm mappings
-        ['n<Leader>t'   ] = {':FloatermToggle<CR>',            noremap = true},
-        ['i<Leader>t'   ] = {'<C-\\><C-n>:FloatermToggle<CR>', noremap = true},
-        ['t<Leader>t'   ] = {'<C-\\><C-n>:FloatermToggle<CR>', noremap = true},
 
         -- Esc out of nvim terminal
         ['t<Esc>'       ] = {'<C-\\><C-n>',                    noremap = true},
