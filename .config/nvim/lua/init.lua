@@ -75,6 +75,8 @@ plug('~/.config/nvim/plugged', {
   'ncm2/ncm2-cssomni',
   'ncm2/ncm2-path',
   'neovim/nvim-lsp',
+  'neovimhaskell/haskell-vim',
+  'norcalli/nvim-colorizer.lua',
   'ntpeters/vim-better-whitespace',
   'rhysd/git-messenger.vim',
   'roxma/nvim-yarp',
@@ -129,18 +131,46 @@ local function init_lsps()
     nvim_lsp.gopls.setup { {} }
     nvim_lsp.tsserver.setup { {} }
 
+    skeleton.reason_ls = {
+        default_config = {
+            cmd = { os.getenv("HOME") .. "/dev/reason-ls/rls-linux/reason-language-server" },
+            filetypes = { 'reason' },
+            root_dir = util.root_pattern('package.json'),
+            log_level = vim.lsp.protocol.MessageType.Warning,
+            settings = {},
+        }
+    }
+
     skeleton.dart_analyzer = {
         default_config = {
-            cmd = { 'dart', '/opt/dart-sdk-dev/bin/snapshots/analysis_server.dart.snapshot', '--lsp' };
-            filetypes = { 'dart' };
-            root_dir = util.root_pattern('pubspec.yaml');
-            log_level = vim.lsp.protocol.MessageType.Warning;
-            settings = {};
+            cmd = { 'dart', '/opt/dart-sdk-dev/bin/snapshots/analysis_server.dart.snapshot', '--lsp' },
+            filetypes = { 'dart' },
+            root_dir = util.root_pattern('pubspec.yaml'),
+            log_level = vim.lsp.protocol.MessageType.Warning,
+            settings = {},
+        }
+    }
+
+    skeleton.haskell_ide_engine = {
+        default_config = {
+            cmd = { 'hie-8.6.5' },
+            filetypes = { 'haskell' },
+            root_dir = util.root_pattern('stack.yaml'),
+            log_level = vim.lsp.protocol.MessageType.Warning,
+            settings = {},
         }
     }
 
     nvim_lsp.dart_analyzer.setup {
-        on_attach = language_client_setup;
+        on_attach = language_client_setup,
+    }
+
+    nvim_lsp.haskell_ide_engine.setup {
+        on_attach = language_client_setup,
+    }
+
+    nvim_lsp.reason_ls.setup {
+        on_attach = language_client_setup,
     }
 end
 -- }}}
@@ -148,7 +178,7 @@ end
 -- Globals {{{
 local function init_globals()
     vim.g.startify_custom_header_quotes             = {{ os.getenv('VERSEOFDAY') }}
-    vim.g.polyglot_disabled                         = { 'dart' }
+    vim.g.polyglot_disabled                         = { 'dart', 'haskell' }
     vim.g.floaterm_position                         = 'center'
     vim.g.floaterm_width                            = nvim_options.columns / 2
     vim.g.mapleader                                 = ';'
@@ -266,7 +296,7 @@ local function init_options()
 
       termguicolors	     = true;
 
-      guifont		     = 'Iosevka\\ Extrabold:h16';
+      guifont		     = 'Iosevka\\ Extrabold:h14';
 
       hidden             = true;
       showtabline        = 2; -- Always show tabline.
@@ -279,7 +309,7 @@ local function init_options()
 
     -- Blink cursor if using GNvim.
     if vim.fn.exists('g:gnvim') then
-        -- options.guicursor = nvim_options.guicursor .. ',a:blinkon333'
+        options.guicursor = nvim_options.guicursor .. ',a:blinkon333'
     end
 
     -- for k, v in pairs(options) do nvim_options[k] = v end
@@ -312,12 +342,12 @@ local function create_autocmds()
         indentation = {
             {'FileType', 'javascript', 'setlocal shiftwidth=2'},
             {'FileType', 'scala',      'setlocal shiftwidth=2'},
-            {'FileType', 'dart',       'setlocal shiftwidth=2'}
+            {'FileType', 'dart',       'setlocal shiftwidth=2'},
         },
         omnifunc = {
-            {'Filetype', 'dart,rust,python,go,c,cpp', 'setl omnifunc=lsp#omnifunc'},
-            {'Filetype', 'fennel',                    'setl omnifunc=fnl#omniComplete'},
-            {'Filetype', 'lua',                       'setl omnifunc=fnl#omniCompleteLua'}
+            {'Filetype', 'reason,haskell,dart,rust,python,go,c,cpp', 'setl omnifunc=lsp#omnifunc'},
+            {'Filetype', 'fennel',                                    'setl omnifunc=fnl#omniComplete'},
+            {'Filetype', 'lua',                                       'setl omnifunc=fnl#omniCompleteLua'}
         },
         ncm2 = {
             -- Enable ncm2 for all buffers.
@@ -352,10 +382,10 @@ local function create_mappings()
         ['n?'           ] = {':call SynStack()<CR>',           noremap = true},
 
         -- No arrow keys.
-        ['n<Up>'        ] = {'<nop>',                          noremap = true},
+        -- ['n<Up>'        ] = {'<nop>',                          noremap = true},
         ['n<Down>'      ] = {'<nop>',                          noremap = true},
-        ['n<Left>'      ] = {'<nop>',                          noremap = true},
-        ['n<Right>'     ] = {'<nop>',                          noremap = true},
+        -- ['n<Left>'      ] = {'<nop>',                          noremap = true},
+        -- ['n<Right>'     ] = {'<nop>',                          noremap = true},
         ['i<Up>'        ] = {'<nop>',                          noremap = true},
         ['i<Down>'      ] = {'<nop>',                          noremap = true},
         ['i<Left>'      ] = {'<nop>',                          noremap = true},
@@ -390,6 +420,9 @@ end
 
 init_globals()
 init_options()
+
+require 'colorizer'.setup()
+
 init_lsps()
 init_lightline()
 
