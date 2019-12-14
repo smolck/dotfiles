@@ -58,7 +58,7 @@ font:
   # Normal (roman) font face
   normal:
     family: Iosevka
-    style: Heavy
+    style: Bold
 
   # Bold font face
   #bold:
@@ -73,7 +73,7 @@ font:
     #style: Italic
 
   # Point size
-  size: 14.5
+  size: 14
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
