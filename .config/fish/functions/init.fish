@@ -1,5 +1,5 @@
 function init
-    set PATH $HOME/go/bin $HOME/.cargo/bin $HOME/.local/bin $HOME/.yarn/bin $HOME/.pub-cache/bin $HOME/flutter/bin $HOME/dev/go/bin $PATH
+    set PATH $HOME/go/bin $HOME/.cargo/bin $HOME/.local/bin $HOME/.yarn/bin $HOME/.pub-cache/bin $HOME/flutter/bin $HOME/dev/go/bin $HOME/dev/elm/bin $PATH
     set -g -x GOPATH $HOME/dev/go
 
     eval (luarocks path)
@@ -15,6 +15,10 @@ function init
     set -g -x MESA_GLSL_CACHE_DISABLE true
 
     set -g -x ANDROID_HOME $HOME/.android-sdk
+
+    # Prevent Alacritty from doing HIDPI scaling
+    set -g -x WINIT_HIDPI_FACTOR 1.0
+    export WINIT_HIDPI_FACTOR=1.0
 
     python ~/dev/python/dailyverses/__init__.py
     set -g -x VERSEOFDAY (python ~/dev/python/dailyverses/read_verse.py)
