@@ -134,7 +134,7 @@ local function init_lsps()
     skeleton.reason_ls = {
         default_config = {
             cmd = { os.getenv("HOME") .. "/dev/reason-ls/rls-linux/reason-language-server" },
-            filetypes = { 'reason' },
+            filetypes = { 'reason', 'ocaml' },
             root_dir = util.root_pattern('package.json'),
             log_level = vim.lsp.protocol.MessageType.Warning,
             settings = {},
@@ -192,6 +192,8 @@ local function init_globals()
     vim.g.strip_whitespace_on_save                  = 1
     vim.g.strip_max_file_size                       = 1000
     vim.g.strip_whitespace_confirm                  = 0
+
+    vim.g.opamshare                                 = vim.fn.substitute(vim.fn.system('opam config var share'), '\n$', '', "''")
 end
 -- }}}
 
@@ -303,13 +305,12 @@ local function init_options()
       completeopt        = {'menuone', 'noinsert', 'noselect'};
 
       -- Should be equivalent to `set rtp+=<SHARE_DIR>/merlin/vim` in VimL
-      -- Don't think I even need this anymore....
-      rtp                = nvim_options.rtp .. ',' .. '<SHARE_DIR>/merlin/vim'
+      rtp                = nvim_options.rtp .. ',' .. vim.g.opamshare .. "/merlin/vim"
     }
 
     -- Blink cursor if using GNvim.
     if vim.fn.exists('g:gnvim') then
-        options.guicursor = nvim_options.guicursor .. ',a:blinkon333'
+        -- options.guicursor = nvim_options.guicursor .. ',a:blinkon333'
     end
 
     -- for k, v in pairs(options) do nvim_options[k] = v end

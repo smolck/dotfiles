@@ -33,8 +33,6 @@ bindswitch lid:on exec systemctl suspend
 
 # ------------------------------------------------------------------------------------------------------------------------ }}}
 
-
-
 # --------------------------------------------------- Input Settings ----------------------------------------------------- {{{
 
 input 1739:0:Synaptics_TM3383-002 {
@@ -54,8 +52,6 @@ input 1:1:AT_Translated_Set_2_keyboard {
 
 
 # ------------------------------------------------------------------------------------------------------------------------ }}}
-
-
 
 # --------------------------------------------------- Keybindings -------------------------------------------------------- {{{
 
@@ -182,8 +178,8 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-output eDP-1 pos 0 0 res 1920x1080
-output DP-1-3 pos 1920 0 res 1920x1080
+# output DP13 pos 0 0 res 1920x1080
+# output eDP1 pos 1920 0 res 1920x1080
 # output DP-1 pos 1920 0 res 1920x1080
 
 bar {
@@ -195,6 +191,12 @@ bar {
 # --------------------------------------------------- App/service execs --------------------------------------------------- {{{
 
 set $background $HOME/pictures/Wallpapers/cool\ wolf\ wallpaper.jpg
+# set $background $HOME/pictures/Wallpapers/catalina-wallpaper-dark-mode-droidviews.png
+# set $background $HOME/pictures/Wallpapers/catalina-wallpaper-droidviews.png
+# set $background $HOME/pictures/Wallpapers/nms.png
+# set $background $HOME/pictures/Wallpapers/mikael-gustafsson-wallpaper-mikael-gustafsson.jpg
+# set $background $HOME/pictures/Wallpapers/Ubuntu-hardy-heron-bird-wallpapers-HD.png
+
 exec --no-startup-id swaybg -i $background
 
 #

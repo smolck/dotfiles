@@ -1,5 +1,5 @@
 function init
-    set PATH $HOME/go/bin $HOME/.cargo/bin $HOME/.local/bin $HOME/.yarn/bin $HOME/.pub-cache/bin $HOME/flutter/bin $HOME/dev/go/bin $HOME/dev/elm/bin $PATH
+    set PATH $HOME/go/bin $HOME/.cargo/bin $HOME/.local/bin $HOME/.yarn/bin $HOME/.pub-cache/bin $HOME/flutter/bin $HOME/dev/go/bin $HOME/dev/elm/bin $HOME/.npm-global/bin $PATH
     set -g -x GOPATH $HOME/dev/go
 
     eval (luarocks path)

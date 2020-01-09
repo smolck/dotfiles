@@ -2,7 +2,7 @@
 
 B='#00000000'  # blank
 C='#ffffff22'  # clear ish
-D='#100e23CC'  # default
+D='#00000000'  # default
 T='#100e23CC'  # text
 W='#cbe3e7aa'  # wrong
 V='#100e23CC'  # verifying
