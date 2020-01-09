@@ -1,0 +1,79 @@
+{
+  "layer": "top",
+  "position": "top",
+
+  // Choose the order of the modules
+  "modules-left": ["sway/workspaces", "sway/mode", "sway/window"],
+  // "modules-center": ["clock", "custom/separator"],
+  "modules-right": ["clock", "custom/separator",
+                    "network", "custom/separator",
+                    "backlight", "custom/separator",
+                    "custom/battery", "custom/separator",
+                    "pulseaudio", "custom/separator",
+                    "cpu", "custom/separator",
+                    "memory", "custom/separator",
+                    "custom/root-space"],
+  // Module config
+  "sway/mode": {
+    "tooltip": true,
+    "format": "<span weight=\"bold\">{}</span>"
+  },
+  "memory": {
+    "interval": 30,
+    "format": "{used:0.1f}G / {total:0.1f}G "
+  },
+  "backlight": {
+    "device": "intel_backlight",
+    "format": "Brightness: {percent}% "
+  },
+  "custom/separator": {
+      "format": "  "
+  },
+  "custom/battery": {
+      "name": "battery",
+      "format": " {} ",
+      "exec": "~/.scripts/battery",
+      "interval": 30
+  },
+  "custom/root-space": {
+      "name": "root-space",
+      "exec": "python $HOME/.scripts/root-space.py",
+      "interval": 60
+  },
+  "network": {
+    "tooltip": false,
+    "format-wifi": " {essid} ({signalStrength}%) ",
+    "format-ethernet": " {ifname}: {ipaddr}/{cidr} ",
+    "format-linked": " {ifname} (No IP) ",
+    "format-alt": " {ifname}: {ipaddr} ",
+    "format-disconnected": "No internet "
+  },
+  "battery": {
+    "tooltip": false,
+    "states": {
+        "warning": 30,
+        "critical": 15
+    },
+    "format": "BAT: {capacity}%",
+    "format-alt": "BAT: {time}",
+    "format-charging": "BAT: {capacity}%",
+    "format-plugged": "BAT: {capacity}%"
+  },
+  "pulseaudio": {
+    "tooltip": false,
+    "format": " Audio: {volume}% ",
+    "format-bluetooth": "Audio: {volume}%",
+    "format-muted": "-- muted --",
+    "format-source": "Audio: {volume}%",
+    "format-source-muted": "-- muted --"
+  },
+  "cpu": {
+    "interval": 5,
+    "tooltip": false,
+    "format": "CPU: {usage}%"
+  },
+  "clock": {
+    "tooltip": false,
+    "format": "{:%a, %b %d %Y %I:%M%P}"
+  }
+}

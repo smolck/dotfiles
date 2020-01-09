@@ -1,0 +1,41 @@
+* {
+    font-size: 14px;
+    font-family: 'Iosevka Extrabold';
+    font-weight: Bold;
+    color: white;
+}
+
+window#waybar {
+    /* background: #212121; */
+    /* background: #212121; */
+    /* background: #282c34; */
+    /* color: black; */
+    /* background: black; */
+    background: transparent;
+}
+
+#workspaces, #clock.1, #clock.2, #clock.3, #pulseaudio, #backlight, #memory, #cpu, #temperature, #battery, #tray {
+    /* background: transparent; */
+}
+
+#workspaces button {
+    padding: 0 10px;
+}
+
+#workspaces button.focused {
+    /* color: #268bd2; */
+    color: white;
+}
+
+#workspaces button:hover {
+    box-shadow: inherit;
+    text-shadow: inherit;
+}
+
+#backlight {
+    padding-left: 10px;
+}
+
+#clock, #memory, #cpu, #temperature, #battery {
+    padding: 0 10px;
+}
