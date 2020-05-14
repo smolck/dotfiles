@@ -6,20 +6,27 @@ local nvim_apply_mappings  = helpers.nvim_apply_mappings
 local nvim_create_augroups = helpers.nvim_create_augroups
 local plug                 = helpers.plug
 
+function format_current_elixir_file()
+    local pwd = vim.api.nvim_command_output('pwd')
+    local root_dir = require('nvim_lsp/util').root_pattern('mix.exs')(pwd)
+
+    vim.api.nvim_command(':silent !cd ' .. root_dir .. ' && mix format ' .. pwd .. '/%')
+end
+
 -- Vim function definitions {{{
-vim.fn['BuildComposer'] = function(info)
+vim.fn.BuildComposer = function(info)
     local has = vim.fn.has
 
     if info.status ~= 'unchanged' or info.force then
         if has('nvim') then
-            vim.api.command('!cargo build --release')
+            vim.api.nvim_command('!cargo build --release')
         else
-            vim.api.command('!cargo build --release --no-default-features --features json-rpc')
+            vim.api.nvim_command('!cargo build --release --no-default-features --features json-rpc')
         end
     end
 end
 
-vim.fn['LightlineReadonly'] = function()
+vim.fn.LightlineReadonly = function()
     if vim.g.readonly then
         return ''
     else
@@ -44,7 +51,6 @@ vim.api.nvim_command [[
     endfunction
 ]]
 
-
 vim.api.nvim_command [[
     function! LightlineFugitive()
        if exists('*fugitive#head')
@@ -58,8 +64,20 @@ vim.api.nvim_command [[
 
 -- Plugins {{{
 plug('~/.config/nvim/plugged', {
+  '/home/smolck/dev/lua/org.nvim',
+
+  'jiangmiao/auto-pairs',
+  'liuchengxu/vim-which-key',
+  -- 'neovim/node-client',
+  'othree/eregex.vim',
+
+  'tpope/vim-dispatch',
+  'clojure-vim/vim-jack-in',
+  'radenling/vim-dispatch-neovim',
+
+  'wakatime/vim-wakatime',
   'Vigemus/nvimux',
-  'Yggdroot/indentLine',
+  -- 'Yggdroot/indentLine',
   'airblade/vim-gitgutter',
   'bakpakin/fennel.vim',
   'clojure-vim/async-clj-omni',
@@ -69,22 +87,45 @@ plug('~/.config/nvim/plugged', {
   'itchyny/lightline.vim',
   'joshdick/onedark.vim',
   'mhinz/vim-startify',
-  'ncm2/float-preview.nvim',
+
+  -- 'jceb/vim-orgmode',
+
+  'guns/vim-clojure-static',
+  'guns/vim-clojure-highlight',
+  'junegunn/rainbow_parentheses.vim',
+
+  {'eraserhd/parinfer-rust', ['do'] = 'nix-shell --run "cargo build --release"'},
+
+  'kdheepak/lazygit.vim',
+
+  'slashmili/alchemist.vim',
   'ncm2/ncm2',
+  'ncm2/float-preview.nvim',
   'ncm2/ncm2-bufword',
   'ncm2/ncm2-cssomni',
   'ncm2/ncm2-path',
+  'roxma/nvim-yarp',
+
   'neovim/nvim-lsp',
+
+  'OmniSharp/omnisharp-vim',
+
+  'haorenW1025/completion-nvim',
+
   'neovimhaskell/haskell-vim',
   'norcalli/nvim-colorizer.lua',
   'ntpeters/vim-better-whitespace',
   'rhysd/git-messenger.vim',
-  'roxma/nvim-yarp',
   'sainnhe/gruvbox-material',
   'sbdchd/neoformat',
   'sheerun/vim-polyglot',
   'taohexxx/lightline-buffer',
+
   'tpope/vim-fireplace',
+
+  'SirVer/ultisnips',
+  'honza/vim-snippets',
+
   'tpope/vim-fugitive',
   'tpope/vim-repeat',
   'tpope/vim-surround',
@@ -120,20 +161,29 @@ nvimux.bootstrap()
 -- Config for LSPs {{{
 local nvim_lsp  = require 'nvim_lsp'
 local util      = require 'nvim_lsp/util'
-local skeleton  = require 'nvim_lsp/skeleton'
+local configs  = require 'nvim_lsp/configs'
 
 local function init_lsps()
-    nvim_lsp.pyls.setup { {} }
-    nvim_lsp.rls.setup {
-        cmd = { 'rustup', 'run', 'nightly', 'rls' }
-    }
-    nvim_lsp.clangd.setup { {} }
-    nvim_lsp.gopls.setup { {} }
-    nvim_lsp.tsserver.setup { {} }
+    local completion_on_attach = require('completion').on_attach
 
-    skeleton.reason_ls = {
+    nvim_lsp.metals.setup {
+        on_attach = completion_on_attach,
+        cmd = { 'metals-vim' }
+    }
+
+    nvim_lsp.ccls.setup {}
+
+    nvim_lsp.pyls.setup { on_attach = completion_on_attach }
+    -- nvim_lsp.rls.setup { cmd = { 'rustup', 'run', 'nightly', 'rls' } }
+    -- nvim_lsp.clangd.setup { {} }
+    --
+    local home = os.getenv('HOME')
+    nvim_lsp.gopls.setup { on_attach = completion_on_attach, cmd = { home .. '/dev/go/bin/gopls' }, }
+    nvim_lsp.tsserver.setup { on_attach = completion_on_attach }
+
+    configs.reason_ls = {
         default_config = {
-            cmd = { os.getenv("HOME") .. "/dev/reason-ls/rls-linux/reason-language-server" },
+            cmd = { home .. "/dev/reason-ls/rls-linux/reason-language-server" },
             filetypes = { 'reason', 'ocaml' },
             root_dir = util.root_pattern('package.json'),
             log_level = vim.lsp.protocol.MessageType.Warning,
@@ -141,9 +191,10 @@ local function init_lsps()
         }
     }
 
-    skeleton.dart_analyzer = {
+    local snapshot_path = '/opt/dart-sdk/bin/snapshots/analysis_server.dart.snapshot'
+    configs.dart_analyzer = {
         default_config = {
-            cmd = { 'dart', '/opt/dart-sdk-dev/bin/snapshots/analysis_server.dart.snapshot', '--lsp' },
+            cmd = { 'dart', snapshot_path, '--lsp' },
             filetypes = { 'dart' },
             root_dir = util.root_pattern('pubspec.yaml'),
             log_level = vim.lsp.protocol.MessageType.Warning,
@@ -151,7 +202,7 @@ local function init_lsps()
         }
     }
 
-    skeleton.haskell_ide_engine = {
+    configs.haskell_ide_engine = {
         default_config = {
             cmd = { 'hie-8.6.5' },
             filetypes = { 'haskell' },
@@ -161,8 +212,18 @@ local function init_lsps()
         }
     }
 
+    configs.elixir_ls = {
+        default_config = {
+            cmd = { os.getenv("HOME") .. "/dev/elixir/elixir-ls/language_server.sh" },
+            filetypes = { 'elixir', 'eelixir' },
+            root_dir = util.root_pattern('mix.exs', '.git'),
+            log_level = vim.lsp.protocol.MessageType.Warning,
+            settings = {},
+        }
+    }
+
     nvim_lsp.dart_analyzer.setup {
-        on_attach = language_client_setup,
+        on_attach = completion_on_attach,
     }
 
     nvim_lsp.haskell_ide_engine.setup {
@@ -172,11 +233,16 @@ local function init_lsps()
     nvim_lsp.reason_ls.setup {
         on_attach = language_client_setup,
     }
+
+    nvim_lsp.elixir_ls.setup {
+        on_attach = completion_on_attach,
+    }
 end
 -- }}}
 
 -- Globals {{{
 local function init_globals()
+    -- vim.g.node_host_prog                            = os.getenv('HOME') .. '/.npm-global/bin/n'
     vim.g.startify_custom_header_quotes             = {{ os.getenv('VERSEOFDAY') }}
     vim.g.polyglot_disabled                         = { 'dart', 'haskell' }
     vim.g.floaterm_position                         = 'center'
@@ -194,6 +260,17 @@ local function init_globals()
     vim.g.strip_whitespace_confirm                  = 0
 
     vim.g.opamshare                                 = vim.fn.substitute(vim.fn.system('opam config var share'), '\n$', '', "''")
+
+    vim.g.neoformat_basic_format_align              = 1
+    vim.g.neoformat_basic_format_retab              = 1
+    vim.g.neoformat_try_formatprg                   = 1
+
+    vim.g.conjure_omnifunc                          = 1
+
+    vim.g.UltiSnipsExpandTrigger                    = "<tab>"
+    vim.g.UltiSnipsJumpForwardTrigger               = "<c-b>"
+    vim.g.UltiSnipsJumpBackwardTrigger              = "<c-z>"
+    -- vim.g.org_agenda_files                          = {'~/org/todos.org'}
 end
 -- }}}
 
@@ -227,8 +304,8 @@ local function init_lightline()
           readonly = 'LightlineReadonly',
           fugitive = 'LightlineFugitive'
         };
-        separator = { left = '', right = '' };
-        subseparator = { left = '', right = '' };
+        -- separator = { left = '', right = '' };
+        -- subseparator = { left = '', right = '' };
     }
     -- Lightline-buffer UI settings
     vim.g.lightline_buffer_logo                     = ' '
@@ -268,6 +345,7 @@ end
 -- Options {{{
 local function init_options()
     local options = {
+      modeline           = true;
       foldmethod         = 'marker';
 
       textwidth          = 80;
@@ -298,14 +376,17 @@ local function init_options()
 
       termguicolors	     = true;
 
-      guifont		     = 'Iosevka\\ Extrabold:h14';
+      -- guifont		     = 'Hasklig\\ Bold:h16';
 
       hidden             = true;
       showtabline        = 2; -- Always show tabline.
       completeopt        = {'menuone', 'noinsert', 'noselect'};
 
+      runtimepath        = nvim_options.runtimepath
+        .. ",/home/smolck/.luarocks/share" .. ",/home/smolck/dev/lua/org.nvim"
+
       -- Should be equivalent to `set rtp+=<SHARE_DIR>/merlin/vim` in VimL
-      rtp                = nvim_options.rtp .. ',' .. vim.g.opamshare .. "/merlin/vim"
+      -- rtp                = nvim_options.rtp .. ',' .. vim.g.opamshare .. "/merlin/vim"
     }
 
     -- Blink cursor if using GNvim.
@@ -332,6 +413,7 @@ local function init_options()
             vim.api.nvim_command('set ' .. k .. '=' .. values)
         else
             vim.api.nvim_command('set ' .. k .. '=' .. v)
+	    -- print('option ' .. k .. ' value ' .. v)
         end
     end
 end
@@ -344,18 +426,24 @@ local function create_autocmds()
             {'FileType', 'javascript', 'setlocal shiftwidth=2'},
             {'FileType', 'scala',      'setlocal shiftwidth=2'},
             {'FileType', 'dart',       'setlocal shiftwidth=2'},
+            {'FileType', 'go',         'setlocal shiftwidth=4'},
         },
         omnifunc = {
-            {'Filetype', 'reason,haskell,dart,rust,python,go,c,cpp', 'setl omnifunc=lsp#omnifunc'},
-            {'Filetype', 'fennel',                                    'setl omnifunc=fnl#omniComplete'},
-            {'Filetype', 'lua',                                       'setl omnifunc=fnl#omniCompleteLua'}
+            {'Filetype', 'reason,haskell,dart,rust,python,go,c,cpp,scala,elixir',  'setlocal omnifunc=v:lua.vim.lsp.omnifunc'},
+            {'Filetype', 'fennel',                                          'setlocal omnifunc=fnl#omniComplete'},
+            {'Filetype', 'lua',                                             'setlocal omnifunc=fnl#omniCompleteLua'}
         },
         ncm2 = {
             -- Enable ncm2 for all buffers.
-            {'BufEnter', '*', 'call ncm2#enable_for_buffer()'}
+            -- {'BufEnter', '*', 'call ncm2#enable_for_buffer()'}
+            {'BufEnter', 'txt', 'call ncm2#enable_for_buffer()'}
         },
         general = {
             {'FocusGained', '*', 'checktime'}
+        },
+        clojure = {
+            {'Syntax', 'clojure', 'ClojureHighlightReferences'},
+            {'VimEnter', '*', 'RainbowParentheses'},
         }
     }
 
@@ -376,6 +464,9 @@ local function create_mappings()
         ['n<Leader>ytc' ] = {'\"+y',                           noremap = true},
 
         ['n<Leader>cc'  ] = {function() print('') end,         noremap = true},
+
+        -- fe -> 'Format Elixir'
+        ['n<Leader>fe'  ] = { format_current_elixir_file,      noremap = true},
 
         ['n<Up>'        ] = {function() jump(0) end,           noremap = true},
         ['n<Right>'     ] = {function() move_forward(0) end,   noremap = true},
