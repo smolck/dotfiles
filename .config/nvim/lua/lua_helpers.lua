@@ -3,12 +3,12 @@ local vim = vim
 
 -- Taken from
 -- https://github.com/norcalli/nvim_utils/blob/master/lua/nvim_utils.lua
-local valid_modes = {
-	n = 'n'; v = 'v'; x = 'x'; i = 'i';
-	o = 'o'; t = 't'; c = 'c'; s = 's';
-	-- :map! and :map
-	['!'] = '!'; [' '] = '';
-}
+-- local valid_modes = {
+-- 	n = 'n'; v = 'v'; x = 'x'; i = 'i';
+-- 	o = 'o'; t = 't'; c = 'c'; s = 's';
+-- 	-- :map! and :map
+-- 	['!'] = '!'; [' '] = '';
+-- }
 LUA_MAPPING = {}
 
 -- Taken from
@@ -20,7 +20,7 @@ end
 
 -- Taken from
 -- https://github.com/norcalli/nvim_utils/blob/master/lua/nvim_utils.lua
-function helpers.nvim_apply_mappings(mappings, default_options)
+function helpers.nvim_apply_mappings(valid_modes, mappings, default_options)
 	-- May or may not be used.
 	local current_bufnr = vim.api.nvim_get_current_buf()
 	for key, options in pairs(mappings) do
