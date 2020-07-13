@@ -1,14 +1,6 @@
 local helpers = {}
 local vim = vim
 
--- Taken from
--- https://github.com/norcalli/nvim_utils/blob/master/lua/nvim_utils.lua
--- local valid_modes = {
--- 	n = 'n'; v = 'v'; x = 'x'; i = 'i';
--- 	o = 'o'; t = 't'; c = 'c'; s = 's';
--- 	-- :map! and :map
--- 	['!'] = '!'; [' '] = '';
--- }
 LUA_MAPPING = {}
 
 -- Taken from
