@@ -8,7 +8,6 @@ executable my-xmonad
   -- other-modules lists custom modules in my ~/.xmonad/lib/ directory
   other-modules:
   build-depends:       base
-                     , taffybar
                      , text
                      , xmonad >= 0.13
                      , xmonad-contrib >= 0.13

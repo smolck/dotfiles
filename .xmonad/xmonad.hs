@@ -527,7 +527,7 @@ myStartupHook = do
 -- See https://github.com/pkrog/public-config/blob/365904a0a396ec295aab45e12b00c3381a675ea9/xmonad/xmonad.hs
 -- Adapted multi-monitor config from there.
 xmobarCommand :: Int -> String
-xmobarCommand x = "xmobar -x " ++ show x ++ " ~/.xmonad/xmobarrc.hs"
+xmobarCommand x = "xmobar -x " ++ show x ++ " ~/.xmonad/xmobar.config"
 
 pp :: Handle -> Int -> PP
 pp h screenId = xmobarPP

@@ -38,7 +38,8 @@ packages:
 # Dependency packages to be pulled from upstream that are not in the resolver
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)
-# extra-deps: []
+# extra-deps:
+# - xmobar-0.35.1@sha256:855c2f477aa9d32b34b3bfa5873e6076d4f337af7dd74bcdc162693bfd062cb2,11921
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
