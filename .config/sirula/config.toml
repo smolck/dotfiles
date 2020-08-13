@@ -1,0 +1,14 @@
+exclusive = false
+
+margin_right = 600
+margin_left = 600
+margin_top = 400
+margin_bottom = 400
+
+anchor_right = true
+anchor_left = true
+lines = 2
+
+icon_size = 32
+
+markup_highlight = 'foreground="#292828" underline="double"'

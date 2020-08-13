@@ -1,0 +1,23 @@
+* {
+    /* color: #928374; */
+    font-family: Fira Code;
+    font-weight: Bold;
+    font-size: 16px;
+}
+
+#search, .background, #app-list, #root-box {
+    color: #928374;
+    background: #262727;
+}
+
+#search {
+    outline: unset;
+    border-color: #a9b665;
+    box-shadow: unset;
+    border-radius: unset;
+}
+
+.app-row:focus, .app-row:hover, .app-row:selected {
+    color: #32302f;
+    background-color: #a9b665;
+}
