@@ -8,7 +8,7 @@
   "modules-right": ["clock", "custom/separator",
                     "network", "custom/separator",
                     "backlight", "custom/separator",
-                    "custom/battery", "custom/separator",
+                    "battery", "custom/separator",
                     "pulseaudio", "custom/separator",
                     "cpu", "custom/separator",
                     "memory", "custom/separator",
@@ -24,16 +24,19 @@
   },
   "backlight": {
     "device": "intel_backlight",
-    "format": "Brightness: {percent}% "
+    "format": "{percent}% <span rise=\"-5000\" font=\"20\">{icon}</span>",
+    "format-icons": [""]
   },
   "custom/separator": {
-      "format": "  "
+      // "format": "  "
+      "format": " "
   },
   "custom/battery": {
       "name": "battery",
-      "format": " {} ",
+      "format": "  {} ",
       "exec": "~/.scripts/battery",
       "interval": 30
+
   },
   "custom/root-space": {
       "name": "root-space",
@@ -42,8 +45,8 @@
   },
   "network": {
     "tooltip": false,
-    "format-wifi": " {essid} ({signalStrength}%) ",
-    "format-ethernet": " {ifname}: {ipaddr}/{cidr} ",
+    "format-wifi": "{essid} ({signalStrength}%) <span rise=\"-5000\" font=\"20\"></span>",
+    "format-ethernet": " {ifname}: {ipaddr}/{cidr}",
     "format-linked": " {ifname} (No IP) ",
     "format-alt": " {ifname}: {ipaddr} ",
     "format-disconnected": "No internet "
@@ -54,26 +57,36 @@
         "warning": 30,
         "critical": 15
     },
-    "format": "BAT: {capacity}%",
-    "format-alt": "BAT: {time}",
-    "format-charging": "BAT: {capacity}%",
-    "format-plugged": "BAT: {capacity}%"
+    "format": "{capacity}% <span rise=\"-5000\" font=\"20\">{icon}</span>",
+    "format-alt": "{time} <span rise=\"-5000\" font=\"20\">{icon}</span>",
+    "format-charging": "{capacity}% <span rise=\"-5000\" font=\"20\">{icon}</span>",
+    "format-plugged": "{capacity}% <span rise=\"-5000\" font=\"20\">{icon}</span>",
+    "format-icons": ["", "", "", "", ""]
   },
   "pulseaudio": {
     "tooltip": false,
-    "format": " Audio: {volume}% ",
-    "format-bluetooth": "Audio: {volume}%",
+    "format": "{volume}% <span rise=\"-5000\" font=\"20\">{icon}</span>",
+    "format-bluetooth": "{volume}% <span rise=\"-5000\" font=\"20\">{icon}</span>",
     "format-muted": "-- muted --",
-    "format-source": "Audio: {volume}%",
-    "format-source-muted": "-- muted --"
+    "format-source": "{volume}% <span rise=\"-5000\" font=\"20\">{icon}</span>",
+    "format-source-muted": "-- muted --",
+    "format-icons": {
+        "headphones": "",
+        "handsfree": "",
+        "headset": "",
+        "phone": "",
+        "portable": "",
+        "car": "",
+        "default": ["", ""]
+    }
   },
   "cpu": {
     "interval": 5,
     "tooltip": false,
-    "format": "CPU: {usage}%"
+    "format": " {usage}% <span rise=\"-5000\" font=\"20\"></span>"
   },
   "clock": {
     "tooltip": false,
-    "format": "{:%a, %b %d %Y %I:%M%P}"
+    "format": "{:%a, %b %d %Y %H:%M}"
   }
 }

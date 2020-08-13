@@ -1,17 +1,24 @@
 * {
     font-size: 14px;
-    font-family: 'Iosevka Extrabold';
+    font-family: 'Fira Code';
     font-weight: Bold;
-    color: white;
+    /* color: black; */
+    color: #d4be98;
 }
 
 window#waybar {
     /* background: #212121; */
     /* background: #212121; */
     /* background: #282c34; */
+    /* background: #282828; */
     /* color: black; */
     /* background: black; */
     background: transparent;
+    /* background: #262727; */
+}
+
+.battery-icon {
+    background-color: white;
 }
 
 #workspaces, #clock.1, #clock.2, #clock.3, #pulseaudio, #backlight, #memory, #cpu, #temperature, #battery, #tray {
@@ -19,23 +26,27 @@ window#waybar {
 }
 
 #workspaces button {
-    padding: 0 10px;
+    padding: 0 2px;
+    margin-right: 8px;
 }
 
 #workspaces button.focused {
     /* color: #268bd2; */
-    color: white;
+    background-color: #504945;
 }
 
 #workspaces button:hover {
     box-shadow: inherit;
     text-shadow: inherit;
+
+    background-color: #ddc7a1;
+    color: #262727;
 }
 
 #backlight {
     padding-left: 10px;
 }
 
-#clock, #memory, #cpu, #temperature, #battery {
+#clock, #memory, #temperature, #battery {
     padding: 0 10px;
 }

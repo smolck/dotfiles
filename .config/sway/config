@@ -13,7 +13,7 @@ client.focused          #4c7899 #4c7899 #4c7899 #4c7899   #a6b3cc
 
 set $mod Mod4
 # Font for window titles.
-font pango:Iosevka\ Extrabold\ Italic 12
+font pango:Iosevka 12
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
@@ -70,25 +70,27 @@ bindsym XF86MonBrightnessUp exec --no-startup-id light -A 5
 bindsym XF86MonBrightnessDown exec --no-startup-id light -U 5
 
 # Launch Applications
-bindsym $mod+Shift+p exec --no-startup-id MESA_GLSL_CACHE_DISABLE=true brave
+# bindsym $mod+Shift+p exec --no-startup-id MESA_GLSL_CACHE_DISABLE=true brave
+bindsym $mod+Shift+p exec --no-startup-id chromium
 bindsym $mod+Shift+x exec --no-startup-id goneovim # GUI Editor
 bindsym $mod+Shift+d exec --no-startup-id firefox-developer-edition
 
 # Suspend
-bindsym $mod+Shift+s exec --no-startup-id systemctl suspend
+# bindsym $mod+Shift+s exec --no-startup-id systemctl suspend
+bindsym $mod+Shift+s exec --no-startup-id sudo zzz
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # start a terminal
 # bindsym $mod+Return exec kitty
-bindsym $mod+Return exec $HOME/dev/rust/alacritty/target/release/alacritty
+bindsym $mod+Return exec alacritty
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start rofi
-bindsym $mod+d exec rofi -show run -theme my_theme
+bindsym $mod+a exec rofi -show drun -theme gruvbox-dark-soft
 
 # change focus
 bindsym $mod+h focus left
@@ -123,7 +125,7 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+# bindsym $mod+a focus parent
 
 # switch to workspace
 bindsym $mod+1 workspace $ws1
@@ -178,9 +180,12 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+output eDP-1 pos 1920 0 res 1920x1080
 # output DP13 pos 0 0 res 1920x1080
 # output eDP1 pos 1920 0 res 1920x1080
 # output DP-1 pos 1920 0 res 1920x1080
+# output eDP-1 pos 0 1080 res 1920x1080
+# output DP-1 pos 0 1080 res 1920x1080
 
 bar {
     swaybar_command waybar
@@ -190,12 +195,21 @@ bar {
 
 # --------------------------------------------------- App/service execs --------------------------------------------------- {{{
 
-set $background $HOME/pictures/Wallpapers/cool\ wolf\ wallpaper.jpg
+
+set $background $HOME/pictures/Wallpapers/cool-wolf.jpeg
+# set $background $HOME/pictures/Wallpapers/whiteblackwolfmoon.jpg
+# set $background $HOME/pictures/Wallpapers/morenms.jpg
+# set $background $HOME/pictures/Wallpapers/cool\ wolf\ wallpaper.jpg
 # set $background $HOME/pictures/Wallpapers/catalina-wallpaper-dark-mode-droidviews.png
 # set $background $HOME/pictures/Wallpapers/catalina-wallpaper-droidviews.png
 # set $background $HOME/pictures/Wallpapers/nms.png
 # set $background $HOME/pictures/Wallpapers/mikael-gustafsson-wallpaper-mikael-gustafsson.jpg
 # set $background $HOME/pictures/Wallpapers/Ubuntu-hardy-heron-bird-wallpapers-HD.png
+# set $background $HOME/pictures/Wallpapers/abstractwolf.jpeg
+# set $background $HOME/pictures/Wallpapers/wolfwhitebackground.jpeg
+# set $background $HOME/pictures/Wallpapers/mikael-gustafsson-fox.jpg
+# set $background $HOME/pictures/Wallpapers/mikael-gustafsson-forest.png
+# set $background $HOME/pictures/Wallpapers/abstract1.jpeg
 
 exec --no-startup-id swaybg -i $background
 
@@ -214,6 +228,6 @@ exec swayidle -w \
     before-sleep "$swaylock_command"
 
 exec --no-startup-id redshift
-exec mako
+# exec mako
 
 # ------------------------------------------------------------------------------------------------------------------------ }}}
