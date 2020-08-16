@@ -4,7 +4,6 @@ local helpers              = require 'lua_helpers'
 local nvim_options         = helpers.nvim_options
 local nvim_apply_mappings  = helpers.nvim_apply_mappings
 local nvim_create_augroups = helpers.nvim_create_augroups
-local plug                 = helpers.plug
 
 -- Vim function definitions {{{
 vim.fn.BuildComposer = function(info)
@@ -53,58 +52,6 @@ vim.api.nvim_command [[
        return ''
     endfunction
 ]]
--- }}}
-
--- Plugins {{{
-plug('~/.config/nvim/plugged', {
-    'neovimhaskell/nvim-hs.vim',
-
-    '/home/smolck/dev/lua/org.nvim',
-
-    -- Use @hoov's fork of tmuxline for truecolor support in lightline.
-    {'sainnhe/tmuxline.vim', on = {'Tmuxline', 'TmuxlineSnapshot'}},
-
-    {'neoclide/coc.nvim', branch = 'release'},
-    'jiangmiao/auto-pairs',
-    'junegunn/fzf',
-    'junegunn/fzf.vim',
-
-    'wakatime/vim-wakatime',
-
-    'Yggdroot/indentLine',
-
-    'airblade/vim-gitgutter',
-
-    'itchyny/lightline.vim',
-    'mhinz/vim-startify',
-
-    'guns/vim-clojure-static',
-    'guns/vim-clojure-highlight',
-    'junegunn/rainbow_parentheses.vim',
-
-    {'eraserhd/parinfer-rust', ['do'] = 'cargo build --release'},
-
-    'kdheepak/lazygit.vim',
-
-    'neovimhaskell/haskell-vim',
-    'norcalli/nvim-colorizer.lua',
-    'ntpeters/vim-better-whitespace',
-
-    'sainnhe/gruvbox-material',
-    'sbdchd/neoformat',
-    'sheerun/vim-polyglot',
-    'taohexxx/lightline-buffer',
-
-    {'Olical/aniseed', tag = 'v3.5.0'},
-    'Olical/conjure',
-    'bakpakin/fennel.vim',
-
-    'SirVer/ultisnips',
-    'honza/vim-snippets',
-
-    'tpope/vim-repeat',
-    'tpope/vim-surround'
-})
 -- }}}
 
 -- Config for LSPs {{{
@@ -191,11 +138,12 @@ plug('~/.config/nvim/plugged', {
 
 -- Globals {{{
 local function init_globals()
+    vim.g.python3_host_prog                         = '/bin/python'
     -- vim.g.node_host_prog                            = os.getenv('HOME') .. '/.npm-global/bin/n'
     vim.g.completion_enable_snippet                 = 'UltiSnips'
 
     vim.g.startify_custom_header_quotes             = {{ os.getenv('VERSEOFDAY') }}
-    vim.g.polyglot_disabled                         = { 'dart', 'haskell' }
+    vim.g.polyglot_disabled                         = { 'dart', 'haskell', 'ocaml' }
     vim.g.floaterm_position                         = 'center'
     vim.g.floaterm_width                            = nvim_options.columns / 2
     vim.g.mapleader                                 = ';'
@@ -223,6 +171,8 @@ local function init_globals()
     vim.g.UltiSnipsJumpForwardTrigger               = "<c-b>"
     vim.g.UltiSnipsJumpBackwardTrigger              = "<c-z>"
     -- vim.g.org_agenda_files                          = {'~/org/todos.org'}
+
+    vim.g.todoist                                   = { key = os.getenv('TODOIST_API_KEY') }
 end
 -- }}}
 
@@ -297,6 +247,7 @@ end
 -- Options {{{
 local function init_options()
     local options = {
+      noswapfile         = true;
       timeoutlen         = 500;
       modeline           = true;
       foldmethod         = 'marker';
@@ -381,7 +332,10 @@ local function create_autocmds()
             {'FileType', 'javascript', 'setlocal shiftwidth=2'},
             {'FileType', 'scala',      'setlocal shiftwidth=2'},
             {'FileType', 'dart',       'setlocal shiftwidth=2'},
+            {'FileType', 'haskell',    'setlocal shiftwidth=2'},
+            {'FileType', 'ocaml',      'setlocal shiftwidth=2'},
             {'FileType', 'go',         'setlocal shiftwidth=4'},
+            {'FileType', 'lua',         'setlocal shiftwidth=2'},
         },
         omnifunc = {
             {'Filetype', 'reason,haskell,dart,rust,python,go,c,cpp,scala,elixir',  'setlocal omnifunc=v:lua.vim.lsp.omnifunc'},
@@ -398,7 +352,7 @@ local function create_autocmds()
         },
         clojure = {
             {'Syntax', 'clojure', 'ClojureHighlightReferences'},
-            {'VimEnter', '*', 'RainbowParentheses'},
+            -- {'VimEnter', '*', 'RainbowParentheses'},
         }
     }
 
@@ -419,7 +373,7 @@ local function create_mappings()
 
     local mappings = {
         ['n<Leader>pt']  = {':NERDTreeToggle<CR>', noremap = true},
-        ['n<Leader>']    = {":WhichKey '<Leader>'<CR>", noremap = true, silent = true},
+        -- ['n<Leader>']    = {":WhichKey '<Leader>'<CR>", noremap = true, silent = true},
 
         ['n<Leader>git'] = {':GitMessenger<CR>',               noremap = true},
 
@@ -434,9 +388,9 @@ local function create_mappings()
         -- fe -> 'Format Elixir'
         -- ['n<Leader>fe'  ] = { format_current_elixir_file,      noremap = true},
 
-        ['n<Up>'        ] = {function() jump(0) end,           noremap = true},
-        ['n<Right>'     ] = {function() move_forward(0) end,   noremap = true},
-        ['n<Left>'      ] = {function() move_backward(0) end,  noremap = true},
+        -- ['n<Up>'        ] = {function() jump(0) end,           noremap = true},
+        -- ['n<Right>'     ] = {function() move_forward(0) end,   noremap = true},
+        -- ['n<Left>'      ] = {function() move_backward(0) end,  noremap = true},
         ['n?'           ] = {':call SynStack()<CR>',           noremap = true},
 
         -- No arrow keys.
@@ -476,13 +430,15 @@ local function create_mappings()
 end
 -- }}}
 
+init_lightline()
+
 init_globals()
 init_options()
 
-require 'colorizer'.setup()
+require'colorizer'.setup()
+require'nvim-todoist.ui'.init()
 
 -- init_lsps()
-init_lightline()
 
 -- Should be enabled before autocmds (afaik)
 vim.api.nvim_command('syntax enable')

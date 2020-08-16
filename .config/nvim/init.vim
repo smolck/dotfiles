@@ -1,7 +1,10 @@
 if !exists('g:vscode')
-    lua require("init")
+    lua require('plugins')
+    " lua require('init')
+    " lua require('nvim-todoist.ui').init()
     " lua require('aniseed.dotfiles')
 
+    hi! Cursor guifg='Red'
     " hi! Normal guibg=none
     " hi! CursorLine guibg=none
     " hi! EndOfBuffer guibg=none
