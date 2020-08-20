@@ -46,10 +46,10 @@
   "network": {
     "tooltip": false,
     "format-wifi": "{essid} ({signalStrength}%) <span rise=\"-5000\" font=\"20\"></span>",
-    "format-ethernet": " {ifname}: {ipaddr}/{cidr}",
-    "format-linked": " {ifname} (No IP) ",
-    "format-alt": " {ifname}: {ipaddr} ",
-    "format-disconnected": "No internet "
+    "format-ethernet": "{ifname}: {ipaddr}/{cidr}",
+    "format-linked": "{ifname} (No IP)",
+    "format-alt": "{ifname}: {ipaddr}",
+    "format-disconnected": "No internet"
   },
   "battery": {
     "tooltip": false,
@@ -83,7 +83,7 @@
   "cpu": {
     "interval": 5,
     "tooltip": false,
-    "format": " {usage}% <span rise=\"-5000\" font=\"20\"></span>"
+    "format": "{usage}% <span rise=\"-5000\" font=\"20\"></span>"
   },
   "clock": {
     "tooltip": false,

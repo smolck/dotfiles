@@ -83,14 +83,15 @@ bindsym $mod+Shift+s exec --no-startup-id sudo zzz
 floating_modifier $mod
 
 # start a terminal
-# bindsym $mod+Return exec kitty
-bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec kitty
+# bindsym $mod+Return exec alacritty
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start rofi
-bindsym $mod+a exec rofi -show drun -theme gruvbox-dark-soft
+# bindsym $mod+a exec rofi -show drun -theme gruvbox-dark-soft
+bindsym $mod+a exec sirula
 
 # change focus
 bindsym $mod+h focus left
@@ -217,15 +218,21 @@ exec --no-startup-id swaybg -i $background
 # Screen locking
 #
 #
-set $swaylock_command swaylock --daemonize \
-    --image $background \
-    --ignore-empty-password
+# set $swaylock_command swaylock --daemonize \
+#     --image $background \
+#     --ignore-empty-password
 
-exec swayidle -w \
-    timeout 1200 "$swaylock_command" \
-    timeout 1200 'swaymsg "output * dpms off"' \
-    resume 'swaymsg "output * dpms on"' \
-    before-sleep "$swaylock_command"
+# exec swayidle -w \
+#      timeout 300 'swaylock -f -c 000000 -i $background' \
+#      timeout 600 'swaymsg "output * dpms off"' \
+#           resume 'swaymsg "output * dpms on"' \
+#      before-sleep 'swaylock -f -c 000000 -i $background'
+
+# exec swayidle -w \
+#     timeout 1200 "$swaylock_command" \
+#     timeout 1200 'swaymsg "output * dpms off"' \
+#     resume 'swaymsg "output * dpms on"' \
+#     before-sleep "$swaylock_command"
 
 exec --no-startup-id redshift
 # exec mako
