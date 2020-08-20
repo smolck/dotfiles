@@ -54,88 +54,6 @@ vim.api.nvim_command [[
 ]]
 -- }}}
 
--- Config for LSPs {{{
--- local nvim_lsp  = require 'nvim_lsp'
--- local util      = require 'nvim_lsp/util'
--- local configs  = require 'nvim_lsp/configs'
---
--- local function init_lsps()
---     local completion_on_attach = require('completion').on_attach
---
---     nvim_lsp.metals.setup {
---         on_attach = completion_on_attach,
---         cmd = { 'metals-vim' }
---     }
---
---     nvim_lsp.ccls.setup {}
---
---     nvim_lsp.pyls.setup { on_attach = completion_on_attach }
---     -- nvim_lsp.rls.setup { cmd = { 'rustup', 'run', 'nightly', 'rls' } }
---     -- nvim_lsp.clangd.setup { {} }
---     --
---     local home = os.getenv('HOME')
---     nvim_lsp.gopls.setup { on_attach = completion_on_attach, cmd = { home .. '/dev/go/bin/gopls' }, }
---     nvim_lsp.tsserver.setup { on_attach = completion_on_attach }
---
---     configs.reason_ls = {
---         default_config = {
---             cmd = { home .. "/dev/reason-ls/rls-linux/reason-language-server" },
---             filetypes = { 'reason', 'ocaml' },
---             root_dir = util.root_pattern('package.json'),
---             log_level = vim.lsp.protocol.MessageType.Warning,
---             settings = {},
---         }
---     }
---
---     local snapshot_path = os.getenv('HOME') .. '/flutter/bin/cache/dart-sdk/bin/snapshots/analysis_server.dart.snapshot'
---     configs.dart_analyzer = {
---         default_config = {
---             cmd = { 'dart', snapshot_path, '--lsp' },
---             filetypes = { 'dart' },
---             root_dir = util.root_pattern('pubspec.yaml'),
---             log_level = vim.lsp.protocol.MessageType.Warning,
---             settings = {},
---         }
---     }
---
---     configs.haskell_ide_engine = {
---         default_config = {
---             cmd = { 'hie-8.6.5' },
---             filetypes = { 'haskell' },
---             root_dir = util.root_pattern('stack.yaml'),
---             log_level = vim.lsp.protocol.MessageType.Warning,
---             settings = {},
---         }
---     }
---
---     configs.elixir_ls = {
---         default_config = {
---             cmd = { os.getenv("HOME") .. "/dev/elixir/elixir-ls/language_server.sh" },
---             filetypes = { 'elixir', 'eelixir' },
---             root_dir = util.root_pattern('mix.exs', '.git'),
---             log_level = vim.lsp.protocol.MessageType.Warning,
---             settings = {},
---         }
---     }
---
---     nvim_lsp.dart_analyzer.setup {
---         on_attach = completion_on_attach,
---     }
---
---     nvim_lsp.haskell_ide_engine.setup {
---         on_attach = language_client_setup,
---     }
---
---     nvim_lsp.reason_ls.setup {
---         on_attach = language_client_setup,
---     }
---
---     nvim_lsp.elixir_ls.setup {
---         on_attach = completion_on_attach,
---     }
--- end
--- }}}
-
 -- Globals {{{
 local function init_globals()
     vim.g.python3_host_prog                         = '/bin/python'
@@ -280,7 +198,8 @@ local function init_options()
 
       termguicolors	     = true;
 
-      guifont		     = 'Hasklig\\ Bold:h14';
+      -- guifont		     = 'Hasklig\\ Bold:h14';
+      guifont		     = 'JetBrainsMono\\ Bold:h14';
 
       hidden             = true;
       showtabline        = 2; -- Always show tabline.
@@ -338,9 +257,9 @@ local function create_autocmds()
             {'FileType', 'lua',         'setlocal shiftwidth=2'},
         },
         omnifunc = {
-            {'Filetype', 'reason,haskell,dart,rust,python,go,c,cpp,scala,elixir',  'setlocal omnifunc=v:lua.vim.lsp.omnifunc'},
-            {'Filetype', 'fennel',                                          'setlocal omnifunc=fnl#omniComplete'},
-            {'Filetype', 'lua',                                             'setlocal omnifunc=fnl#omniCompleteLua'}
+            {'Filetype', 'lua,reason,haskell,dart,rust,python,go,c,cpp,scala,elixir',  'setlocal omnifunc=v:lua.vim.lsp.omnifunc'},
+            -- {'Filetype', 'fennel',                                          'setlocal omnifunc=fnl#omniComplete'},
+            -- {'Filetype', 'lua',                                             'setlocal omnifunc=fnl#omniCompleteLua'}
         },
         ncm2 = {
             -- Enable ncm2 for all buffers.
@@ -446,3 +365,34 @@ vim.api.nvim_command('filetype plugin on')
 
 create_mappings()
 create_autocmds()
+
+require'snippets'.use_suggested_mappings()
+require'snippets'.snippets = {
+  lua = {
+    -- Courtesy of @norcalli
+    func = [[function${1|vim.trim(S.v):gsub("^%S"," %0")}(${2|vim.trim(S.v)})$0 end]];
+    req = [[local ${2:${1|S.v:match"%w+$"}} = require '$1']];
+    ["local"] = [[local ${2:${1|S.v:match"[^.]+$"}} = ${1}]];
+
+    ["for"] = "for ${1:i}, ${2:v} in ipairs(${3:t}) do\n$0\nend";
+
+    ["vmap"] = [[vim.tbl_map(function(x) return ${1:x} end, ${2:t})]];
+    ["vfilter"] = [[vim.tbl_filter(function(x) return ${1:x} == ${2} end, ${3:t})]];
+
+    randcolor = function()
+      return string.format("#%06X", math.floor(math.random() * 0xFFFFFF))
+    end;
+
+    -- ["local"] = [[local ${2:${1|S.v:match"([^.()]+)[()]*$"}} = ${1}]];
+  }
+}
+
+if vim.fn.has('gnvim') ~= 0 then
+  -- Disable external tabline
+  vim.fn['gnvim#enable_ext_tabline'](0)
+  vim.api.nvim_command('GnvimCursorEnableAnimations 0')
+end
+
+require'lsp'.setup_lsps()
+
+require'nvim-gitter.plugin'.init()
