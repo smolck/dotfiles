@@ -49,4 +49,5 @@ require('packer').startup(function()
   use 'sainnhe/gruvbox-material'
 
   use 'norcalli/snippets.nvim'
+  use 'norcalli/nvim_utils'
 end)

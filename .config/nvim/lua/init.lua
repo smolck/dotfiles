@@ -1,9 +1,6 @@
 local vim                  = vim
 local os                   = require 'os'
-local helpers              = require 'lua_helpers'
-local nvim_options         = helpers.nvim_options
-local nvim_apply_mappings  = helpers.nvim_apply_mappings
-local nvim_create_augroups = helpers.nvim_create_augroups
+require('nvim_utils')
 
 -- Vim function definitions {{{
 vim.fn.BuildComposer = function(info)
@@ -63,7 +60,7 @@ local function init_globals()
     vim.g.startify_custom_header_quotes             = {{ os.getenv('VERSEOFDAY') }}
     vim.g.polyglot_disabled                         = { 'dart', 'haskell', 'ocaml' }
     vim.g.floaterm_position                         = 'center'
-    vim.g.floaterm_width                            = nvim_options.columns / 2
+    vim.g.floaterm_width                            = vim.o.columns / 2
     vim.g.mapleader                                 = ';'
     vim.g.maplocalleader                            = ';'
 
@@ -177,7 +174,7 @@ local function init_options()
       ignorecase         = true;
       encoding           = 'UTF-8';
       background         = 'dark';
-      path               = nvim_options.path .. ',' .. vim.api.nvim_call_function('getenv', { 'PWD' });
+      path               = vim.o.path .. ',' .. vim.api.nvim_call_function('getenv', { 'PWD' });
       wildmenu           = true;
       tabstop            = 4;
       shiftwidth         = 4;
@@ -205,9 +202,9 @@ local function init_options()
       showtabline        = 2; -- Always show tabline.
       completeopt        = {'menuone', 'noinsert', 'noselect'};
 
-      shortmess          = nvim_options.shortmess .. 'c';
+      shortmess          = vim.o.shortmess .. 'c';
 
-      runtimepath        = nvim_options.runtimepath
+      runtimepath        = vim.o.runtimepath
         .. ",/home/smolck/.luarocks/share" .. ",/home/smolck/dev/lua/org.nvim"
 
       -- Should be equivalent to `set rtp+=<SHARE_DIR>/merlin/vim` in VimL
@@ -345,7 +342,7 @@ local function create_mappings()
         --]]
     }
 
-    helpers.nvim_apply_mappings(valid_modes, mappings)
+    nvim_apply_mappings(mappings)
 end
 -- }}}
 
@@ -356,8 +353,6 @@ init_options()
 
 require'colorizer'.setup()
 require'nvim-todoist.ui'.init()
-
--- init_lsps()
 
 -- Should be enabled before autocmds (afaik)
 vim.api.nvim_command('syntax enable')
@@ -396,3 +391,4 @@ end
 require'lsp'.setup_lsps()
 
 require'nvim-gitter.plugin'.init()
+require'globals'
