@@ -12,17 +12,30 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
+# alias dotnet='$HOME/dotnet/dotnet'
+alias rice='clear && neofetch'
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 # alias ccol=$HOME/.scripts/change_color_temp
 # alias cr='cargo run'
 alias lsc="ls --color=auto"
 alias tmux='TERM=screen-256color tmux' # Make truecolor play nice with Alacritty and Tmux
+alias icat='kitty +kitten icat'
 
-fpath=($fpath "/home/smolck/.zfunctions")
+fpath=($fpath "$HOME/.zfunctions")
 fpath+=$HOME/.zsh/typewritten
 
 autoload -U promptinit; promptinit
 prompt typewritten
 
 (go run personal-projects/biblegateway-verse-of-day &) &> /dev/null
-export VERSEOFDAY=$(cat .verse-of-day)
+export VERSEOFDAY=$(cat ~/.verse-of-day)
+fpath=($fpath "$HOME/.zfunctions")
+
+  # Set Spaceship ZSH as a prompt
+  autoload -U promptinit; promptinit
+  prompt spaceship
+
+# opam configuration
+test -r $HOME/.opam/opam-init/init.zsh && . $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+fpath=($fpath "$HOME/.zfunctions")
+fpath=($fpath "$HOME/.zfunctions")
