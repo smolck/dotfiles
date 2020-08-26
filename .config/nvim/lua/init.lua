@@ -1,6 +1,8 @@
 local vim                  = vim
-local os                   = require 'os'
+local api                  = vim.api
+local os                   = require('os')
 require('nvim_utils')
+require('globals')
 
 -- Vim function definitions {{{
 vim.fn.BuildComposer = function(info)
@@ -8,9 +10,9 @@ vim.fn.BuildComposer = function(info)
 
     if info.status ~= 'unchanged' or info.force then
         if has('nvim') then
-            vim.api.nvim_command('!cargo build --release')
+            api.nvim_command('!cargo build --release')
         else
-            vim.api.nvim_command('!cargo build --release --no-default-features --features json-rpc')
+            api.nvim_command('!cargo build --release --no-default-features --features json-rpc')
         end
     end
 end
@@ -23,7 +25,7 @@ vim.fn.LightlineReadonly = function()
     end
 end
 
-vim.api.nvim_command [[
+api.nvim_command [[
     function! DeleteTrailingWS()
       exe 'normal mz'
       %s/\s\+$//ge
@@ -31,7 +33,7 @@ vim.api.nvim_command [[
     endfunction
 ]]
 
-vim.api.nvim_command [[
+api.nvim_command [[
     function! SynStack()
         if !exists('*synstack')
             return
@@ -40,7 +42,7 @@ vim.api.nvim_command [[
     endfunction
 ]]
 
-vim.api.nvim_command [[
+api.nvim_command [[
     function! LightlineFugitive()
        if exists('*fugitive#head')
         let branch = fugitive#head()
@@ -65,6 +67,10 @@ local function init_globals()
     vim.g.maplocalleader                            = ';'
 
     -- Colorscheme
+    vim.g.gruvbox_material_better_performance        = 1
+    vim.g.gruvbox_material_diagnostic_line_highlight = 1
+    vim.g.gruvbox_material_background               = 'hard'
+    -- vim.g.colors_name                               = 'gruvbox-material'
     vim.g.colors_name                               = 'gruvbox-material'
 
     vim.g.neomake_cpp_enabled_makers                = {'clangd'}
@@ -74,7 +80,8 @@ local function init_globals()
     vim.g.strip_max_file_size                       = 1000
     vim.g.strip_whitespace_confirm                  = 0
 
-    vim.g.opamshare                                 = vim.fn.substitute(vim.fn.system('opam config var share'), '\n$', '', "''")
+    -- This is slow! I think.
+    -- vim.g.opamshare                                 = vim.fn.substitute(vim.fn.system('opam config var share'), '\n$', '', "''")
 
     vim.g.neoformat_basic_format_align              = 1
     vim.g.neoformat_basic_format_retab              = 1
@@ -91,153 +98,81 @@ local function init_globals()
 end
 -- }}}
 
--- Lightline config {{{
-local function init_lightline()
-    vim.g.lightline = {
-        colorscheme = 'gruvbox_material';
-        tabline = {
-          left = { { 'bufferinfo' },
-                    { 'separator' },
-                    { 'bufferbefore', 'buffercurrent', 'bufferafter' }, },
-          right = { { 'tabs', 'close' }, },
-        };
-        active = {
-            left = { { 'mode', 'paste' },
-                    { 'fugitive', 'readonly', 'filename', 'modified' }
-            }
-        };
-        component_expand = {
-          buffercurrent = 'lightline#buffer#buffercurrent',
-          bufferbefore = 'lightline#buffer#bufferbefore',
-          bufferafter = 'lightline#buffer#bufferafter',
-        };
-        component_type = {
-          buffercurrent = 'tabsel',
-          bufferbefore = 'raw',
-          bufferafter = 'raw',
-        };
-        component_function = {
-          bufferinfo = 'lightline#buffer#bufferinfo',
-          readonly = 'LightlineReadonly',
-          fugitive = 'LightlineFugitive'
-        };
-        -- separator = { left = '', right = '' };
-        -- subseparator = { left = '', right = '' };
-    }
-    -- Lightline-buffer UI settings
-    vim.g.lightline_buffer_logo                     = ' '
-    vim.g.lightline_buffer_readonly_icon            = ''
-    vim.g.lightline_buffer_modified_icon            = '✭'
-    vim.g.lightline_buffer_git_icon                 = ' '
-    vim.g.lightline_buffer_ellipsis_icon            = '..'
-    vim.g.lightline_buffer_expand_left_icon         = '◀ '
-    vim.g.lightline_buffer_expand_right_icon        = ' ▶'
-    vim.g.lightline_buffer_active_buffer_left_icon  = ''
-    vim.g.lightline_buffer_active_buffer_right_icon = ''
-    vim.g.lightline_buffer_separator_icon           = '  '
-
-    -- Requires <https://github.com/ryanoasis/vim-devicons>
-    vim.g.lightline_buffer_enable_devicons          = 1
-
-    vim.g.lightline_buffer_show_bfnr                = 1
-
-    -- See `:help filename-modifiers`
-    vim.g.lightline_buffer_fname_mod                = ':t'
-
-    -- Hide buffer list
-    vim.g.lightline_buffer_excludes                 = { 'vimfiler' }
-
-    vim.g.lightline_buffer_maxflen                  = 30 -- Max file name length
-    vim.g.lightline_buffer_minflen                  = 16 -- Min file name length
-
-    vim.g.lightline_buffer_maxfextlen               = 30 -- Max file extension length
-    vim.g.lightline_buffer_minfextlen               = 3  -- Min file extension length
-
-    -- Reserve length for other componenet (e.g. info, close)
-    vim.g.lightline_buffer_reservelen               = 20
-end
-
--- }}}
-
 -- Options {{{
 local function init_options()
-    local options = {
-      noswapfile         = true;
-      timeoutlen         = 500;
-      modeline           = true;
-      foldmethod         = 'marker';
+  vim.bo.swapfile         = false
+  vim.o.swapfile          = false
 
-      textwidth          = 80;
-      splitbelow         = true;
-      splitright         = true;
-      title              = true;
-      ignorecase         = true;
-      encoding           = 'UTF-8';
-      background         = 'dark';
-      path               = vim.o.path .. ',' .. vim.api.nvim_call_function('getenv', { 'PWD' });
-      wildmenu           = true;
-      tabstop            = 4;
-      shiftwidth         = 4;
-      softtabstop        = 4;
-      expandtab          = true;
-      smarttab           = true;
-      autoindent         = true;
+  vim.wo.foldmethod         = 'marker'
+  vim.bo.modeline           = true
+  vim.o.modeline            = true
 
-      number             = true;
-      relativenumber     = true;
-      autochdir          = true;
-      hlsearch           = true;
-      smartcase          = true;
-      cursorline         = true;
-      linebreak          = true;
-      wrap               = false;
-      lazyredraw         = true;
+  vim.o.timeoutlen         = 500
 
-      termguicolors	     = true;
+  vim.o.textwidth          = 80
+  vim.bo.textwidth          = 80
 
-      -- guifont		     = 'Hasklig\\ Bold:h14';
-      guifont		     = 'JetBrainsMono\\ Bold:h14';
+  vim.o.splitbelow         = true
+  vim.o.splitright         = true
 
-      hidden             = true;
-      showtabline        = 2; -- Always show tabline.
-      completeopt        = {'menuone', 'noinsert', 'noselect'};
+  vim.o.title              = true
+  vim.o.ignorecase         = true
+  vim.o.encoding           = 'UTF-8'
+  -- background         = os.date('*t').hour > 18 and 'dark' or 'light'
+  vim.o.background         = 'dark'
 
-      shortmess          = vim.o.shortmess .. 'c';
+  vim.o.path               = vim.o.path .. ',' .. api.nvim_call_function('getenv', { 'PWD' })
 
-      runtimepath        = vim.o.runtimepath
-        .. ",/home/smolck/.luarocks/share" .. ",/home/smolck/dev/lua/org.nvim"
+  vim.o.wildmenu           = true
 
-      -- Should be equivalent to `set rtp+=<SHARE_DIR>/merlin/vim` in VimL
-      -- rtp                = nvim_options.rtp .. ',' .. vim.g.opamshare .. "/merlin/vim"
-    }
+  vim.bo.tabstop           = 4
+  vim.o.tabstop            = 4
+
+  vim.bo.shiftwidth        = 4
+  vim.o.shiftwidth         = 4
+
+  vim.bo.softtabstop       = 4
+  vim.o.softtabstop        = 4
+
+  vim.bo.expandtab         = true
+  vim.o.expandtab          = true
+
+  vim.o.smarttab           = true
+
+  vim.bo.autoindent        = true
+  vim.o.autoindent         = true
+
+  vim.wo.number            = true
+  vim.wo.relativenumber    = true
+  vim.o.autochdir          = true
+  vim.o.hlsearch           = true
+  vim.o.smartcase          = true
+
+  vim.wo.cursorline        = true
+  vim.wo.linebreak         = true
+  -- vim.wo.wrap              = false
+  -- vim.o.lazyredraw         = true
+
+  -- guifont		     = 'Hasklig\\ Bold:h14';
+  vim.o.guifont		     = 'JetBrainsMono\\ Bold:h14'
+
+  vim.o.hidden             = true
+  vim.o.showtabline        = 2 -- Always show tabline.
+  vim.o.completeopt        = 'menuone,noinsert,noselect'
+  vim.o.shortmess          = vim.o.shortmess .. 'c'
+
+  vim.o.runtimepath        = vim.o.runtimepath
+    .. ",/home/smolck/.luarocks/share" .. ",/home/smolck/dev/lua/org.nvim"
+
+  -- Should be equivalent to `set rtp+=<SHARE_DIR>/merlin/vim` in VimL
+  -- rtp                = nvim_options.rtp .. ',' .. vim.g.opamshare .. "/merlin/vim"
+    -- }
+  vim.o.termguicolors = true
 
     -- Blink cursor if using GNvim.
-    if vim.fn.exists('g:gnvim') then
-        -- options.guicursor = nvim_options.guicursor .. ',a:blinkon333'
-    end
-
-    -- for k, v in pairs(options) do nvim_options[k] = v end
-
-    -- TODO(smolck): Temporary until change in vim.api.nvim_set_option
-    -- or addition of a different API function or something.
-    for k, v in pairs(options) do
-        if v == true or v == false then
-            vim.api.nvim_command('set ' .. k)
-        elseif type(v) == 'table' then
-            local values = ''
-            for k2, v2 in pairs(v) do
-                if k2 == 1 then
-                    values = values .. v2
-                else
-                    values = values .. ',' .. v2
-                end
-            end
-            vim.api.nvim_command('set ' .. k .. '=' .. values)
-        else
-            vim.api.nvim_command('set ' .. k .. '=' .. v)
-	    -- print('option ' .. k .. ' value ' .. v)
-        end
-    end
+  if vim.fn.exists('g:gnvim') then
+      -- options.guicursor = nvim_options.guicursor .. ',a:blinkon333'
+  end
 end
 -- }}}
 
@@ -346,49 +281,46 @@ local function create_mappings()
 end
 -- }}}
 
-init_lightline()
-
 init_globals()
 init_options()
 
 require'colorizer'.setup()
-require'nvim-todoist.ui'.init()
 
 -- Should be enabled before autocmds (afaik)
-vim.api.nvim_command('syntax enable')
-vim.api.nvim_command('filetype plugin on')
+api.nvim_command('syntax enable')
+api.nvim_command('filetype plugin on')
 
 create_mappings()
 create_autocmds()
 
-require'snippets'.use_suggested_mappings()
-require'snippets'.snippets = {
-  lua = {
-    -- Courtesy of @norcalli
-    func = [[function${1|vim.trim(S.v):gsub("^%S"," %0")}(${2|vim.trim(S.v)})$0 end]];
-    req = [[local ${2:${1|S.v:match"%w+$"}} = require '$1']];
-    ["local"] = [[local ${2:${1|S.v:match"[^.]+$"}} = ${1}]];
-
-    ["for"] = "for ${1:i}, ${2:v} in ipairs(${3:t}) do\n$0\nend";
-
-    ["vmap"] = [[vim.tbl_map(function(x) return ${1:x} end, ${2:t})]];
-    ["vfilter"] = [[vim.tbl_filter(function(x) return ${1:x} == ${2} end, ${3:t})]];
-
-    randcolor = function()
-      return string.format("#%06X", math.floor(math.random() * 0xFFFFFF))
-    end;
-
-    -- ["local"] = [[local ${2:${1|S.v:match"([^.()]+)[()]*$"}} = ${1}]];
-  }
-}
-
 if vim.fn.has('gnvim') ~= 0 then
   -- Disable external tabline
   vim.fn['gnvim#enable_ext_tabline'](0)
-  vim.api.nvim_command('GnvimCursorEnableAnimations 0')
+  api.nvim_command('GnvimCursorEnableAnimations 0')
 end
 
-require'lsp'.setup_lsps()
+require'statusline'
 
-require'nvim-gitter.plugin'.init()
-require'globals'
+local gm_conf = vim.fn['gruvbox_material#get_configuration']()
+local gruvbox_material_palette =
+  vim.fn['gruvbox_material#get_palette'](gm_conf.background, gm_conf.palette)
+
+api.nvim_command('highlight SignColumn guibg=' .. gruvbox_material_palette.bg0[1])
+
+require'bufferline'.setup {
+  highlights = {
+    -- close = {
+    --   guibg = gruvbox_material_palette.bg0[1];
+    -- };
+    -- bufferline_fill = {
+    --   guibg = gruvbox_material_palette.bg0[1];
+    -- };
+  };
+}
+
+vim.defer_fn(function()
+  require'mysnippets'
+  require'lsp'.setup_lsps()
+  require'nvim-todoist'.neovim_stuff.use_defaults()
+  require'gitter'.neovim_stuff.use_defaults()
+end, 600)
