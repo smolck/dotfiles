@@ -1,14 +1,9 @@
 if !exists('g:vscode')
     lua require('plugins')
+    " set termguicolors
     " lua require('init')
     " lua require('nvim-todoist.ui').init()
     " lua require('aniseed.dotfiles')
-
-    hi! Cursor guifg='Red'
-    " hi! Normal guibg=none
-    " hi! CursorLine guibg=none
-    " hi! EndOfBuffer guibg=none
-
     " lua require('orgnvim').setup()
 
     let g:tmuxline_preset = {
@@ -30,5 +25,5 @@ if !exists('g:vscode')
 
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-    set rtp^="/home/smolck/.opam/default/share/ocp-indent/vim"
+    " set rtp^="/home/smolck/.opam/default/share/ocp-indent/vim"
 endif
