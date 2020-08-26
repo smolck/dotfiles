@@ -71,7 +71,8 @@ bindsym XF86MonBrightnessDown exec --no-startup-id light -U 5
 
 # Launch Applications
 # bindsym $mod+Shift+p exec --no-startup-id MESA_GLSL_CACHE_DISABLE=true brave
-bindsym $mod+Shift+p exec --no-startup-id chromium
+# bindsym $mod+Shift+p exec --no-startup-id chromium
+bindsym $mod+Shift+p exec --no-startup-id firefox
 bindsym $mod+Shift+x exec --no-startup-id goneovim # GUI Editor
 bindsym $mod+Shift+d exec --no-startup-id firefox-developer-edition
 
@@ -83,6 +84,7 @@ bindsym $mod+Shift+s exec --no-startup-id sudo zzz
 floating_modifier $mod
 
 # start a terminal
+# bindsym $mod+Return exec luajit ~/.scripts/launch_kitty.lua
 bindsym $mod+Return exec kitty
 # bindsym $mod+Return exec alacritty
 
@@ -158,8 +160,8 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r exec swaymsg reload
 
-# exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+# exit sway
+bindsym $mod+Shift+e exec "swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway?' -B 'Yes, exit sway' 'swaymsg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -207,7 +209,7 @@ set $background $HOME/pictures/Wallpapers/cool-wolf.jpeg
 # set $background $HOME/pictures/Wallpapers/mikael-gustafsson-wallpaper-mikael-gustafsson.jpg
 # set $background $HOME/pictures/Wallpapers/Ubuntu-hardy-heron-bird-wallpapers-HD.png
 # set $background $HOME/pictures/Wallpapers/abstractwolf.jpeg
-# set $background $HOME/pictures/Wallpapers/wolfwhitebackground.jpeg
+# set $background $HOME/pictures/Wallpapers/wolfwhitebackground.jpg
 # set $background $HOME/pictures/Wallpapers/mikael-gustafsson-fox.jpg
 # set $background $HOME/pictures/Wallpapers/mikael-gustafsson-forest.png
 # set $background $HOME/pictures/Wallpapers/abstract1.jpeg
@@ -234,7 +236,7 @@ exec --no-startup-id swaybg -i $background
 #     resume 'swaymsg "output * dpms on"' \
 #     before-sleep "$swaylock_command"
 
-exec --no-startup-id redshift
+exec --no-startup-id gammastep -O 4500
 # exec mako
 
 # ------------------------------------------------------------------------------------------------------------------------ }}}
