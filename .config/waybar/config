@@ -12,7 +12,8 @@
                     "pulseaudio", "custom/separator",
                     "cpu", "custom/separator",
                     "memory", "custom/separator",
-                    "custom/root-space"],
+                    "custom/root-space", "custom/separator",
+                    "tray"],
   // Module config
   "sway/mode": {
     "tooltip": true,
