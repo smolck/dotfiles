@@ -1,383 +1,439 @@
-;
-;   ██████╗  ██████╗ ██╗  ██╗   ██╗██████╗  █████╗ ██████╗
-;   ██╔══██╗██╔═══██╗██║  ╚██╗ ██╔╝██╔══██╗██╔══██╗██╔══██╗
-;   ██████╔╝██║   ██║██║   ╚████╔╝ ██████╔╝███████║██████╔╝
-;   ██╔═══╝ ██║   ██║██║    ╚██╔╝  ██╔══██╗██╔══██║██╔══██╗
-;   ██║     ╚██████╔╝███████╗██║   ██████╔╝██║  ██║██║  ██║
-;   ╚═╝      ╚═════╝ ╚══════╝╚═╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
-;
-;
-;   To learn more about how to configure Polybar
-;   go to https://github.com/polybar/polybar
-;
-;   The README contains a lot of information
-;
-;==========================================================
+;--------------------------------------------
+; colors                                    ;
+;--------------------------------------------
 
 [colors]
-background = #100e23
-background-alt = #444
-foreground = #63f2f1
-foreground-alt = #555
-primary = #ffb52a
-secondary = #e60053
-alert = #bd2c40
 
-[bar/bar]
-fixed-center = true
-monitor = ${env:MONITOR:}
-width = 100%
-background = ${colors.background}
-foreground = ${colors.foreground}
+	bar_bg = ${xrdb:color0}
+	bar_fg = ${xrdb:color7}
 
-line-size = 0
-line-color = #f00
+	border_col = ${xrdb:color0}
 
-;border-size = 4
-border-color = #00000000
+	modules_bg = ${xrdb:color7}
+	modules_fg = ${xrdb:color0}
 
-module-margin-left = 2
-module-margin-right = 2
+	mod_bg = ${xrdb:color7}
 
-font-2 = Iosevka Heavy:size=10:antialias=true
-font-1 = Iosevka Heavy:size=10:antialias=true
-font-0 = FontAwesome:size=10:antialias=true
+	modules_prefix_bg = ${xrdb:color7}
+	modules_prefix_fg = ${xrdb:color0}
 
-modules-left = workspaces cpu temperature memory filesystem-root
-modules-center = date
-modules-right = filesystem-home wlan eth battery pkg pulseaudio backlight
+	urgent_bg  = ${xrdb:color1}
+	focused_bg = ${xrdb:color10}
 
-tray-position = right
-tray-padding = 2
-;tray-background = #0063ff
+	essid_p_bg   = ${xrdb:color6}
+	down_p_bg    = #5e606c
+	cpu_p_bg     = ${xrdb:color5}
+	ram_p_bg     = ${xrdb:color11}
+	vol_p_bg     = #637b81
+	bright_p_bg  = #c29f6f
+	battery_p_bg = ${xrdb:color9}
+	time_p_bg    = ${xrdb:color10}
 
-cursor-click = pointer
-cursor-scroll = ns-resize
+;--------------------------------------------
+; bars                                      ;
+;--------------------------------------------
 
-[module/pkg]
-type = custom/script
-exec = $HOME/.config/polybar/scripts/updates.sh
-format-background = ${colors.background}
-format-foreground = #63f2f1
-;format-padding = 2
-tail = true
+[bar/base]
+	dpi      = 192
+	width    = 100%
+	height   = 32
+	offset-x = 0
+	offset-y = 0
+
+	bottom = false
+
+	background = #000f0f0f
+	foreground = ${xrdb:color7}
+
+	border-bottom-size  = 0
+	border-top-size     = 10
+
+	border-left-size  = 0
+	border-right-size = 30
+
+	border-bottom-color = #000f0f0f
+	border-top-color    = #000f0f0f
+
+	border-left-color  = #000f0f0f
+	border-right-color = #000f0f0f
+
+	spacing            = 0
+	padding-left       = 0
+	padding-right      = 0
+	module-margin-left = 0
+
+	font-N = <fontconfig pattern>;<vertical offset>
+	font-0 = Siji:size=4;2
+	font-1 = lemon:pixelsize=10;1
+	font-2 = Kochi Gothic:size=4;1
+
+	modules-right  = previous playpause next paddinglite workspaces paddinglite battery date
+
+	fixed-center = true
+
+	monitor = LVDS-1
+
+[bar/mon2]
+	dpi = 192
+	width = 100%
+
+	bottom = true
+
+	background = #000f0f0f
+	foreground = #000f0f0f
+
+	border-left-color  = #000f0f0f
+	border-top-color   = #000f0f0f
+
+	border-left-size   = 10
+	border-bottom-size = 10
+
+	font-0 = lemon:pixelsize=10;1
+
+	modules-left = mon2
+
+	monitor = DP1-2
+
+
+;--------------------------------------------
+; modules                                   ;
+;--------------------------------------------
+
+[module/network]
+	type          = internal/network
+	interface     = wlp3s0
+	ping-interval = 3
 
 [module/xwindow]
-type = internal/xwindow
-label = %title:0:30:...%
-
-[module/filesystem-home]
-inherit = module/filesystem
-mount-0 = /home
-
-[module/filesystem-root]
-inherit = module/filesystem
-
-[module/filesystem]
-type = internal/fs
-interval = 25
-
-mount-0 = /
-;mount-1 = /home
-
-fixed-values = true
-
-format-mounted = [ <label-mounted> ]
-
-;label-mounted = root: %used%
-label-mounted = %mountpoint%: %used% of %total%
-label-unmounted = %mountpoint% not mounted
-label-unmounted-foreground = ${colors.foreground-alt}
-
-[module/workspaces]
-type = internal/i3
-pin-workspaces = true
-enable-click = false
-enable-scroll = false
-format-padding = 0
-content-padding = 0
-label-focused-padding = 2
-label-unfocused-padding = 2
-label-visible-padding = 2
-label-urgent-padding = 2
-
-[module/bspwm]
-type = internal/bspwm
-
-label-focused = %index%
-label-focused-background = ${colors.background-alt}
-label-focused-underline= ${colors.primary}
-label-focused-padding = 2
-
-label-occupied = %index%
-label-occupied-padding = 2
-
-label-urgent = %index%!
-label-urgent-background = ${colors.alert}
-label-urgent-padding = 2
-
-label-empty = %index%
-label-empty-foreground = ${colors.foreground-alt}
-label-empty-padding = 2
-
-[module/backlight]
-type = internal/backlight
-format =  <ramp> <bar> ]
-format-foreground = #aaffe4
-
-ramp-0 = 
-ramp-1 = 
-ramp-2 = 
-
-bar-width = 10
-bar-indicator = |
-bar-indicator-font = 3
-bar-indicator-foreground = #ff
-bar-fill = ─
-bar-fill-font = 3
-bar-fill-foreground = #c9665e
-bar-empty = ─
-bar-empty-font = 3
-bar-empty-foreground = #44
-
-card = intel_backlight
-
-[module/cpu]
-type = internal/cpu
-interval = 2
-;format-prefix =
-format-prefix-foreground = ${colors.foreground-alt}
-format-foreground = #aaffe4
-# format-underline = #f90000
-label = [  %percentage:2%%  -
-
-[module/memory]
-type = internal/memory
-format = "[ <label> <bar-used> ]"
-format-foreground = #63f2f1
-label = 
-
-bar-used-width = 15
-bar-used-foreground-0 = #aaff77
-bar-used-foreground-1 = #aaff77
-bar-used-foreground-2 = #fba922
-bar-used-foreground-3 = #ff5555
-bar-used-indicator = |
-bar-used-indicator-font = 6
-bar-used-indicator-foreground = #ff
-bar-used-fill = ─
-bar-used-fill-font = 6
-bar-used-empty = ─
-bar-used-empty-font = 6
-bar-used-empty-foreground = #444444
-
-[module/wlan]
-type = internal/network
-interface = wlp5s0
-interval = 3.0
-
-;format-connected = <ramp-signal> <label-connected>
-format-connected = <label-connected>
-; format-connected-underline = #9f78e1
-label-connected =  %essid% %signal%%
-label-connected-foreground = #63f2f1
-
-format-disconnected =
-;format-disconnected = <label-disconnected>
-;format-disconnected-underline = ${self.format-connected-underline}
-;label-disconnected = %ifname% disconnected
-;label-disconnected-foreground = ${colors.foreground-alt}
-
-;ramp-signal-0 = 
-;ramp-signal-1 = 
-;ramp-signal-2 = 
-;ramp-signal-3 = 
-;ramp-signal-4 = 
-;ramp-signal-foreground = ${colors.foreground-alt}
-
-[module/eth]
-type = internal/network
-interface = enp3s0
-interval = 3.0
-
-# format-connected-underline = #55aa55
-format-connected-prefix = " "
-format-connected-prefix-foreground = ${colors.foreground-alt}
-label-connected = %local_ip%
-
-format-disconnected =
-;format-disconnected = <label-disconnected>
-;format-disconnected-underline = ${self.format-connected-underline}
-;label-disconnected = %ifname% disconnected
-;label-disconnected-foreground = ${colors.foreground-alt}
+	y-offset      = 10
+	type          = internal/xwindow
+	format        = <label>
+	label         = %title:0:50:%
+	label-padding = 3
 
 [module/date]
-type = internal/date
-interval = 5
-format-foreground = #aaffe4
+	type     = internal/date
+	interval = 1.0
+	time     = "%I:%M %p"
+	label    = "%time%"
 
-date =  %A, %d %B %Y
-date-alt = " %Y-%m-%d"
+	format         = <label>
+	format-padding = 0
 
-time = %H:%M
-time-alt = %H:%M:%S
+	label-background = ${xrdb:color21}
+	label-foreground = ${xrdb:color18}
+	label-padding    = 4
 
-format-prefix = 
-format-prefix-foreground = ${colors.foreground-alt}
-# format-underline = #0a6cf5
+[module/previous]
+	type = custom/text
 
-label = %date% %time%
+	content = "   "
+	content-background = ${xrdb:color0}
+	content-foreground = ${xrdb:color21}
+	content-padding = 0
 
-[module/pulseaudio]
-type = internal/pulseaudio
+	click-left = mpc prev
 
-format-volume = [ <label-volume> <bar-volume>
-label-volume = 
-label-volume-foreground = #aaffe4
+[module/playpause]
+	type = custom/script
 
-label-muted = [ -- muted --
-label-muted-foreground = #565575
+	exec = sh ~/.config/polybar/playpause.sh
 
-bar-volume-width = 10
-bar-volume-foreground-0 = #55aa55
-bar-volume-foreground-1 = #55aa55
-bar-volume-foreground-2 = #55aa55
-bar-volume-foreground-3 = #55aa55
-bar-volume-foreground-4 = #55aa55
-bar-volume-foreground-5 = #f5a70a
-bar-volume-foreground-6 = #ff5555
-bar-volume-gradient = false
-bar-volume-indicator = |
-bar-volume-indicator-font = 2
-bar-volume-fill = ─
-bar-volume-fill-font = 2
-bar-volume-empty = ─
-bar-volume-empty-font = 2
-bar-volume-empty-foreground = ${colors.foreground-alt}
+	interval= .5
 
-[module/alsa]
-type = internal/alsa
+	label = %output%
+	label-background = ${xrdb:color0}
+	label-foreground = ${xrdb:color21}
+	label-padding = 2
 
-format-volume = <label-volume> <bar-volume>
-label-volume = VOL
-label-volume-foreground = ${root.foreground}
+	click-left = mpc toggle
 
-format-muted-prefix = " "
-format-muted-foreground = ${colors.foreground-alt}
-label-muted = sound muted
+[module/next]
+	type = custom/text
 
-bar-volume-width = 10
-bar-volume-foreground-0 = #55aa55
-bar-volume-foreground-1 = #55aa55
-bar-volume-foreground-2 = #55aa55
-bar-volume-foreground-3 = #55aa55
-bar-volume-foreground-4 = #55aa55
-bar-volume-foreground-5 = #f5a70a
-bar-volume-foreground-6 = #ff5555
-bar-volume-gradient = false
-bar-volume-indicator = |
-bar-volume-indicator-font = 2
-bar-volume-fill = ─
-bar-volume-fill-font = 2
-bar-volume-empty = ─
-bar-volume-empty-font = 2
-bar-volume-empty-foreground = ${colors.foreground-alt}
+	content = "   "
+
+	content-background = ${xrdb:color0}
+	content-foreground = ${xrdb:color21}
+	content-padding = 0
+
+	click-left = mpc next
+
+[module/music]
+	type = internal/mpd
+
+	host = 127.0.0.1
+	port = 6600
+
+	interval = 2
+
+	format-online = <label-song>
+
+	label-song         = "%artist% - %title% "
+	label-song-padding = 0
+	label-song-background = ${xrdb:color0}
+	label-song-foreground = ${xrdb:color7}
+
+	format-online-prefix-padding = 0
 
 [module/battery]
-type = internal/battery
-full-at = 98
+	type          = internal/battery
+	full-at       = 98
+	battery       = BAT0
+	adapter       = AC0
+	poll-interval = 5
 
-format-charging = <animation-charging> <label-charging>
-format-discharging = <ramp-capacity> <label-discharging>
-format-full = <ramp-capacity> <label-full>
-format-charging-foreground = #aaffe4
-format-discharging-foreground = #aaffe4
-format-full-foreground = #aaffe4
+	format-charging = <label-charging>
 
-ramp-capacity-0 = 
-ramp-capacity-0-foreground = #f53c3c
-ramp-capacity-1 = 
-ramp-capacity-1-foreground = #ffa900
-ramp-capacity-2 = 
-ramp-capacity-3 = 
-ramp-capacity-4 = 
+	label-charging            = "%percentage%%"
+	label-charging-background = ${xrdb:color7}
+	label-charging-foreground = ${xrdb:color0}
+	label-charging-padding    = 4
 
-bar-capacity-width = 10
-bar-capacity-format = %{+u}%{+o}%fill%%empty%%{-u}%{-o}
-bar-capacity-fill = █
-bar-capacity-fill-foreground = #ddffffff
-bar-capacity-fill-font = 3
-bar-capacity-empty = █
-bar-capacity-empty-font = 3
-bar-capacity-empty-foreground = #44ffffff
+	format-discharging = <label-discharging>
 
-animation-charging-0 = 
-animation-charging-1 = 
-animation-charging-2 = 
-animation-charging-3 = 
-animation-charging-4 = 
-animation-charging-framerate = 750
+	label-discharging            = "%percentage%%"
+	label-discharging-background = ${xrdb:color7}
+	label-discharging-foreground = ${xrdb:color0}
+	label-discharging-padding    = 4
 
-[module/temperature]
-type = internal/temperature
-thermal-zone = 0
-warn-temperature = 60
+	format-full = <label-full>
 
-format = <label> ]
-# format-underline = #f50a4d
-format-warn = <label-warn> ]
-format-foreground = #aaffe4
-# format-warn-underline = ${self.format-underline}
+	label-full            = "%percentage%%"
+	label-full-background = ${xrdb:color7}
+	label-full-foreground = ${xrdb:color0}
+	label-full-padding    = 4
 
-label = %temperature-c%
-label-warn = %temperature-c%
-label-warn-foreground = ${colors.secondary}
+[module/volume]
+	type          = internal/pulseaudio
+	format-volume = <label-volume>
 
-ramp-0 = 
-ramp-1 = 
-ramp-2 = 
-ramp-foreground = ${colors.foreground-alt}
+	mapped = true
 
-[module/powermenu]
-type = custom/menu
+	label-volume            = "%percentage%%"
+	label-volume-background = ${xrdb:color0}
+	label-volume-foreground = ${xrdb:color7}
+	label-volume-padding    = 1
 
-expand-right = true
+	format-muted = <label-muted>
 
-format-spacing = 1
+	label-muted            = "0% (muted)"
+	label-muted-background = ${xrdb:color0}
+	label-muted-foreground = ${xrdb:color7}
+	label-muted-padding    = 1
 
-label-open = 
-label-open-foreground = ${colors.secondary}
-label-close =  cancel
-label-close-foreground = ${colors.secondary}
-label-separator = |
-label-separator-foreground = ${colors.foreground-alt}
+	format-volume-padding = 0
+	format-muted-padding  = 0
 
-menu-0-0 = reboot
-menu-0-0-exec = menu-open-1
-menu-0-1 = power off
-menu-0-1-exec = menu-open-2
+	ramp-headphones-0 = 
 
-menu-1-0 = cancel
-menu-1-0-exec = menu-open-0
-menu-1-1 = reboot
-menu-1-1-exec = sudo reboot
+[module/cpu]
+	type             = internal/cpu
+	interval         = 0.5
+	format           = <label>
+	label            = %percentage%%
+	label-background = ${colors.modules_bg}
+	label-foreground = ${colors.modules_fg}
+	label-padding    = 1
 
-menu-2-0 = power off
-menu-2-0-exec = sudo poweroff
-menu-2-1 = cancel
-menu-2-1-exec = menu-open-0
+	format-prefix = 
 
-[settings]
-screenchange-reload = true
-;compositing-background = xor
-;compositing-background = screen
-;compositing-foreground = source
-;compositing-border = over
-;pseudo-transparency = false
-pseudo-transparency = true
+	format-prefix-padding    = 1
+	format-prefix-background = ${colors.cpu_p_bg}
+	format-prefix-foreground = ${colors.modules_prefix_fg}
 
-[global/wm]
-margin-top = 5
-margin-bottom = 5
+[module/ram]
+	type     = internal/memory
+	interval = 3
 
-; vim:ft=dosini
+	format           = <label>
+	label            = "%percentage_used%%"
+	label-background = ${colors.modules_bg}
+	label-foreground = ${colors.modules_fg}
+	label-padding    = 1
+
+	format-prefix = 
+
+	format-prefix-padding    = 1
+	format-prefix-background = ${colors.ram_p_bg}
+	format-prefix-foreground = ${colors.modules_prefix_fg}
+
+
+[module/essid]
+	inherit = module/network
+
+	format-connected = <label-connected>
+
+	format-connected-prefix              = ""
+	format-connected-prefix-padding      = 1
+	format-connected-prefix-padding-left = 1
+	format-connected-prefix-background   = ${xrdb:color0}
+	format-connected-prefix-foreground   = ${xrdb:color5}
+
+	label-connected               = "%essid%"
+	label-connected-background    = ${xrdb:color0}
+	label-connected-foreground    = ${xrdb:color5}
+	label-connected-padding       = 1
+	label-connected-padding-right = 1
+
+	ramp-signal-background    = ${xrdb:color0}
+	ramp-signal-foreground    = ${xrdb:color5}
+	ramp-connected-foreground = ${xrdb:color5}
+	ramp-signal-padding       = 1
+
+	format-disconnected = <label-disconnected>
+
+	format-disconnected-prefix              = ""
+	format-disconnected-prefix-padding      = 1
+	format-disconnected-prefix-padding-left = 1
+	format-disconnected-prefix-background   = ${xrdb:color0}
+	format-disconnected-prefix-foreground   = ${xrdb:color7}
+
+	label-disconnected               = "DISCONNECTED"
+	label-disconnected-background    = ${xrdb:color0}
+	label-disconnected-foreground    = ${xrdb:color7}
+	label-disconnected-padding       = 1
+	label-disconnected-padding-right = 1
+
+
+[module/down]
+	inherit = module/network
+
+	format-connected = <label-connected>
+
+	format-connected-prefix            = 
+	format-connected-prefix-background = ${colors.down_p_bg}
+	format-connected-prefix-foreground = ${colors.modules_prefix_fg}
+	format-connected-prefix-padding    = 1
+
+	label-connected               = %{T2}%downspeed:7%%{T-}
+	label-connected-background    = ${colors.modules_bg}
+	label-connected-foreground    = ${colors.modules_fg}
+	label-connected-padding-right = 1
+
+[module/padding]
+	type               = custom/text
+	content            = ||
+	content-padding    = 1
+	content-foreground = #000f0f0f
+	content-background = #000f0f0f
+
+[module/paddinglite]
+	type               = custom/text
+	content            = |
+	content-padding    = .5
+	content-foreground = ${xrdb:color18}
+	content-background = ${xrdb:color18}
+
+[module/workspaces]
+
+	type            = internal/xmonad
+	format          = <label-state> <label-mode>
+	index-sort      = true
+	wrapping-scroll = false
+	strip-wsnumbers = true
+
+	label-mode-background = ${xrdb:color18}
+	label-mode-foreground = ${xrdb:color7}
+	label-mode-padding    = 1
+
+	label-focused            = +
+	label-focused-background = ${xrdb:color18}
+	label-focused-foreground = ${xrdb:color3}
+	label-focused-padding    = 1
+
+	label-unfocused            = -
+	label-unfocused-background = ${xrdb:color18}
+	label-unfocused-foreground = ${xrdb:color8}
+	label-unfocused-padding    = 1
+
+	label-visible            = -
+	label-visible-background = ${xrdb:color18}
+	label-visible-foreground = ${xrdb:color7}
+	label-visible-padding    = 1
+
+	label-urgent            = -
+	label-urgent-background = ${xrdb:color18}
+	label-urgent-foreground = ${xrdb:color1}
+	label-urgent-padding    = 1
+
+	pin-workspaces = true
+
+[module/mon2]
+
+	type            = internal/xmonad
+	format          = <label-state><label-mode>
+	index-sort      = true
+	wrapping-scroll = false
+	strip-wsnumbers = true
+
+	label-mode-background = #000f0f0f
+	label-mode-foreground = ${xrdb:color7}
+	label-mode-padding    = 1
+
+	label-focused            = %name%
+	label-focused-background = #000f0f0f
+	label-focused-foreground = ${xrdb:color2}
+	label-focused-padding    = 1
+
+	label-unfocused            = %name%
+	label-unfocused-background = #000f0f0f
+	label-unfocused-foreground = ${xrdb:color7}
+	label-unfocused-padding    = 1
+
+	label-visible            = %name%
+	label-visible-background = #000f0f0f
+	label-visible-foreground = ${xrdb:color7}
+	label-visible-padding    = 1
+
+	label-urgent            = •
+	label-urgent-background = ${xrdb:color7}
+	label-urgent-foreground = ${xrdb:color1}
+	label-urgent-padding    = 1
+
+	pin-workspaces = true
+
+
+[module/openbox]
+	type                      = internal/xworkspaces
+	pin-workspaces            = true
+	enable-click              = false
+	enable-scroll             = false
+	format                    = <label-state>
+	label-monitor             = %name%
+	label-active              = %icon%%name%
+	label-active-foreground   = ${colors.obfg}
+	label-active-background   = ${colors.obbg}
+	label-active-underline    = #fba922
+	label-active-padding      = 1
+	label-occupied            = %name%
+	label-occupied-background = ${colors.obbg}
+	label-occupied-padding    = 1
+	label-urgent              = %index%
+	label-urgent-foreground   = #000000
+	label-urgent-background   = #bd2c40
+	label-urgent-underline    = #9b0a20
+	label-empty               = %name%
+	label-empty-padding       = 1
+	label-empty-background    = ${colors.obibg}
+	label-empty-foreground    = ${colors.obifg}
+
+[module/backlight]
+	type = internal/backlight
+
+	output = LVDS-1
+
+	card          = acpi_video0
+	enable-scroll = false
+
+	format        = <label>
+	format-prefix = 
+
+	format-prefix-padding    = 1
+	format-prefix-background = ${colors.cpu_p_bg}
+	format-prefix-foreground = ${colors.modules_prefix_fg}
+
+	label            = %percentage%%
+	label-background = ${colors.modules_bg}
+	label-foreground = ${colors.modules_fg}
+	label-padding    = 1

@@ -3,5 +3,8 @@
 " exec printf('luafile %s/lua/init.lua', s:load_dir)
 
 lua << EOF
-vim.api.nvim_exec('luafile ' .. os.getenv('HOME') .. '/.config/nvim/lua/init.lua', false)
+vim.api.nvim_exec('luafile ' .. os.getenv('HOME') .. '/dev/lua/profiler.nvim/lua/profiler.lua', false)
+
+require('init')
+-- vim.api.nvim_exec('luafile ' .. os.getenv('HOME') .. '/.config/nvim/lua/init.lua', false)
 EOF

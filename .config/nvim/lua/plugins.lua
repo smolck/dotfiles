@@ -5,20 +5,41 @@ require('packer').startup(function()
   local use = use
   use {'wbthomason/packer.nvim', opt = true}
 
+  -- use 'cocopon/iceberg.vim'
+
+  use 'nvim-treesitter/nvim-treesitter'
+  use 'vigoux/architext.nvim'
+
   use 'dstein64/vim-startuptime'
+  -- use 'voldikss/vim-floaterm'
+
+  use {'Raimondi/delimitMate', event = 'InsertEnter *'}
 
   use 'kyazdani42/nvim-web-devicons'
   use 'Akin909/nvim-bufferline.lua'
 
+  -- use 'junegunn/fzf'
+  -- use 'junegunn/fzf.vim'
+  -- use 'chengzeyi/fzf-preview.vim'
+
   -- Lua-related
   use 'nvim-lua/plenary.nvim'
+  use 'nvim-lua/popup.nvim'
+
+  use 'neovim/nvim-lspconfig'
+
   use 'tjdevries/express_line.nvim'
-  use 'tjdevries/nlua.nvim'
-  use 'neovim/nvim-lsp'
+  use '/home/smolck/dev/lua/nlua.nvim'
+  -- use 'tjdevries/nlua.nvim'
+
+
+  -- use 'nvim-lua/telescope.nvim'
+  use '~/dev/lua/telescope.nvim'
   use 'nvim-lua/completion-nvim'
-  use 'norcalli/neovim-plugin'
   use 'norcalli/ui.nvim'
+
   use '~/dev/lua/nvim-todoist.lua'
+  -- use {'smolck/nvim-todoist.lua', branch = 'plenary-as-submodule'}
   use '~/dev/lua/gitter.nvim'
 
   -- use 'editorconfig/editorconfig-vim'
@@ -26,21 +47,8 @@ require('packer').startup(function()
   -- use '~/dev/lua/org.nvim'
   use 'sainnhe/tmuxline.vim'
 
-  use 'jiangmiao/auto-pairs'
-  -- use 'junegunn/fzf'
-  -- use 'junegunn/fzf.vim'
-
-  -- use 'wakatime/vim-wakatime'
   use 'ActivityWatch/aw-watcher-vim'
-  -- use 'Yggdroot/indentLine'
-
-  -- use 'airblade/vim-gitgutter'
-
-  -- use 'itchyny/lightline.vim'
-  -- use 'taohexxx/lightline-buffer'
   use 'mhinz/vim-startify'
-
-  use {'challenger-deep-theme/vim', as = 'challenger-deep'}
 
   -- use 'guns/vim-clojure-static'
   -- use 'guns/vim-clojure-highlight'
@@ -52,7 +60,8 @@ require('packer').startup(function()
   use 'norcalli/nvim-colorizer.lua'
   use 'ntpeters/vim-better-whitespace'
   use 'sbdchd/neoformat'
-  use 'sheerun/vim-polyglot'
+  -- use 'sheerun/vim-polyglot'
+  -- use 'dart-lang/dart-vim-plugin'
 
   -- use {'Olical/aniseed', tag = 'v3.5.0'}
   -- use 'Olical/conjure'
@@ -60,7 +69,6 @@ require('packer').startup(function()
   use 'tpope/vim-repeat'
   use 'tpope/vim-surround'
 
-  -- use 'gruvbox-community/gruvbox'
   use 'sainnhe/gruvbox-material'
 
   use 'norcalli/snippets.nvim'

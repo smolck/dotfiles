@@ -39,3 +39,10 @@ fpath=($fpath "$HOME/.zfunctions")
 test -r $HOME/.opam/opam-init/init.zsh && . $HOME/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 fpath=($fpath "$HOME/.zfunctions")
 fpath=($fpath "$HOME/.zfunctions")
+
+# . /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# export ZSH_AUTOSUGGEST_STRATEGY=completion
+# export ZSH_AUTOSUGGEST_USE_ASYNC=
+# export ZSH_AUTOSUGGEST_MANUAL_REBIND=
+# . /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh

@@ -18,6 +18,21 @@ function nested_list(input)
   return str
 end
 
+function create_list_of_strings(input)
+  local str = ''
+  local function wrap_quotes(x) return "'" .. x .. "'" end
+  for item, _ in input:gmatch('([%s%w%.%_]+),') do
+    local str_end = (' '):rep(vim.bo.shiftwidth) .. wrap_quotes(item)
+    if str == '' then
+      str = str .. str_end
+    else
+      str = str .. ',\n' .. str_end
+    end
+  end
+
+  return str
+end
+
 require'snippets'.snippets = {
   todoist = {
     create_task = [[${1|nested_list(S.v)}]];
@@ -33,9 +48,16 @@ require'snippets'.snippets = {
     ["vmap"] = [[vim.tbl_map(function(x) return ${1:x} end, ${2:t})]];
     ["vfilter"] = [[vim.tbl_filter(function(x) return ${1:x} == ${2} end, ${3:t})]];
 
+    slis = [[
+local $1 = {
+${2|create_list_of_strings(S.v)}
+}
+]];
+
     randcolor = function()
       return string.format("#%06X", math.floor(math.random() * 0xFFFFFF))
     end;
+
 
     -- ["local"] = [[local ${2:${1|S.v:match"([^.()]+)[()]*$"}} = ${1}]];
   }

@@ -62,8 +62,10 @@ bindsym $mod+u gaps inner current minus 5
 bindsym $mod+i gaps inner current plus 5
 
 # Change volume
-bindsym XF86AudioLowerVolume exec --no-startup-id amixer set Master 5%-
-bindsym XF86AudioRaiseVolume exec --no-startup-id amixer set Master 5%+
+# bindsym XF86AudioLowerVolume exec --no-startup-id amixer set Master 5%-
+# bindsym XF86AudioRaiseVolume exec --no-startup-id amixer set Master 5%+
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
 
 # Change brightness
 bindsym XF86MonBrightnessUp exec --no-startup-id light -A 5
@@ -71,14 +73,14 @@ bindsym XF86MonBrightnessDown exec --no-startup-id light -U 5
 
 # Launch Applications
 # bindsym $mod+Shift+p exec --no-startup-id MESA_GLSL_CACHE_DISABLE=true brave
-# bindsym $mod+Shift+p exec --no-startup-id chromium
-bindsym $mod+Shift+p exec --no-startup-id firefox
+bindsym $mod+Shift+p exec --no-startup-id chromium
+# bindsym $mod+Shift+p exec --no-startup-id firefox
 bindsym $mod+Shift+x exec --no-startup-id goneovim # GUI Editor
 bindsym $mod+Shift+d exec --no-startup-id firefox-developer-edition
 
 # Suspend
-# bindsym $mod+Shift+s exec --no-startup-id systemctl suspend
-bindsym $mod+Shift+s exec --no-startup-id sudo zzz
+bindsym $mod+Shift+s exec --no-startup-id systemctl suspend
+# bindsym $mod+Shift+s exec --no-startup-id sudo zzz
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod

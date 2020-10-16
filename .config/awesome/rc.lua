@@ -5,6 +5,7 @@ pcall(require, "luarocks.loader")
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
+local dpi   = require('beautiful.xresources').apply_dpi
 require("awful.autofocus")
 
 -- Widget and layout library
@@ -48,7 +49,7 @@ end
 -- }}}
 
 awful.util.spawn('picom --backend glx --vsync')
-awful.util.spawn('setxkbmap -option caps:swapescape')
+-- awful.util.spawn('setxkbmap -option caps:swapescape')
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
@@ -57,8 +58,10 @@ beautiful.init(os.getenv('HOME') .. '/.config/awesome/themes/gruvboxmat/theme.lu
 beautiful.wallpaper = '/home/smolck/.config/awesome/themes/gruvboxmat/wall.jpg'
 
 -- This is used later as the default terminal and editor to run.
-terminal = "alacritty"
-editor = os.getenv("EDITOR") or "nvim"
+-- terminal = "xfce4-terminal"
+-- terminal   = "alacritty"
+terminal   = "kitty"
+editor     = os.getenv("EDITOR") or "nvim"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -273,7 +276,7 @@ client.connect_signal("request::titlebars", function(c)
         end)
     )
 
-    awful.titlebar(c) : setup {
+    awful.titlebar(c, {height = 20}) : setup {
         { -- Left
             awful.titlebar.widget.iconwidget(c),
             buttons = buttons,
@@ -285,14 +288,20 @@ client.connect_signal("request::titlebars", function(c)
                 widget = awful.titlebar.widget.titlewidget(c)
             },
             buttons = buttons,
-            layout  = wibox.layout.flex.horizontal
+            layout  = wibox.layout.flex.horizontal,
         },
         { -- Right
+            -- awful.titlebar.widget.floatingbutton (c),
+            -- awful.titlebar.widget.stickybutton   (c),
+            -- awful.titlebar.widget.ontopbutton    (c),
             awful.titlebar.widget.floatingbutton (c),
-            awful.titlebar.widget.maximizedbutton(c),
-            awful.titlebar.widget.stickybutton   (c),
-            awful.titlebar.widget.ontopbutton    (c),
+            wibox.widget.textbox(" "),
+
+            awful.titlebar.widget.minimizebutton (c),
+            wibox.widget.textbox(" "),
+
             awful.titlebar.widget.closebutton    (c),
+            wibox.widget.textbox(" "),
             layout = wibox.layout.fixed.horizontal()
         },
         layout = wibox.layout.align.horizontal

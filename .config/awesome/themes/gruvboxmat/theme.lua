@@ -1,6 +1,7 @@
 local theme_assets = require('beautiful.theme_assets')
 local awful        = require('awful')
 local xresources   = require('beautiful.xresources')
+local gears        = require('gears')
 local dpi          = xresources.apply_dpi
 
 local colors       = require('themes/gruvboxmat/colors')
@@ -8,7 +9,12 @@ local colors       = require('themes/gruvboxmat/colors')
 local theme = {}
 
 theme.dir             = os.getenv('HOME') .. '/.config/awesome/themes/gruvboxmat'
-theme.wallpaper       = theme.dir .. '/wall.jpg'
+
+-- awful.util.spawn('feh --bg-center ' .. os.getenv('HOME') .. '/pictures/Wallpapers/wolfwhitebackground.jpg')
+-- theme.wallpaper       = os.getenv('HOME') .. '/pictures/Wallpapers/wolfwhitebackground.jpg'
+theme.wallpaper       = os.getenv('HOME') .. '/pictures/Wallpapers/spacescape_10.jpg'
+-- theme.wallpaper       = theme.dir .. '/wolf-wall.jpg'
+-- theme.wallpaper       = theme.dir .. '/wolfwhitebackground.jpg'
 
 theme.font        = 'Hasklig Bold 12'
 theme.nerd_font   = 'Hasklig Bold 12'
@@ -21,6 +27,9 @@ theme.bg_focus     = colors.bg
 theme.bg_urgent    = colors.bg1
 theme.bg_minimize  = colors.bg1
 theme.bg_systray   = colors.bg1
+
+theme.titlebar_close_button_normal     = gears.surface.load_from_shape(40, 80, gears.shape.circle, colors.red)
+theme.titlebar_minimize_button_normal  = gears.surface.load_from_shape(40, 80, gears.shape.circle, colors.yellow)
 
 theme.fg_normal    = colors.fg
 theme.fg_focus     = colors.fg0
@@ -55,6 +64,11 @@ function theme.create_wibar(screen)
     }
 
     local root_space = awful.widget.watch('python ' .. theme.dir .. '/scripts/root_space.py', 20)
+    theme.brightness = awful.widget.watch('light', 5, function(widget, stdout)
+        -- Takes "xx.yy" and turns it into "xx%"
+        local x, _ = string.gsub(stdout, "(%w+)%.(%w+)", "%1%%")
+        widget:set_text("Brightness: " .. x)
+    end)
 
     -- Create a wibox for each screen and add it
     local taglist_buttons = gears.table.join(
@@ -105,6 +119,40 @@ function theme.create_wibar(screen)
         end
     }
 
+    -- local volume = lain.widget.pulse {
+    --     settings = function()
+    --         vlevel = volume_now.left .. ' - ' .. volume_now.right .. '% -> ' .. volume_now.device
+    --         if volume_now.muted == 'yes' then
+    --             vlevel = vlevel .. ' M'
+    --         end
+    --         widget:set_markup(vlevel)
+    --     end
+    -- }
+
+    theme.volume = lain.widget.pulse {
+        settings = function()
+            widget:set_markup("Volume: " .. volume_now.left .. "%")
+        end
+    }
+
+    local net      = lain.widget.net {
+        notify     = 'off',
+        wifi_state = 'on',
+        settings   = function()
+            local wlp5s0 = net_now.devices.wlp5s0
+            if wlp5s0 then
+                if wlp5s0.wifi then
+                    local signal = wlp5s0.signal
+                    widget:set_markup(signal)
+                else
+                    widget:set_markup('no wifi')
+                end
+            else
+                widget:set_markup('no wifi')
+            end
+        end
+    }
+
     screen.wibar:setup {
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
@@ -121,8 +169,17 @@ function theme.create_wibar(screen)
             wibox.widget.textclock(),
             separator,
 
+            net.widget,
+            separator,
+
             -- baticon,
             mem.widget,
+            separator,
+
+            theme.brightness,
+            separator,
+
+            theme.volume.widget,
             separator,
 
             bat.widget,

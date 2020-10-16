@@ -55,8 +55,8 @@ import qualified Data.Map                      as M
 --
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
--- myTerminal = "alacritty"
-myTerminal = "st"
+myTerminal = "kitty"
+-- myTerminal = "st"
 
 myBrowser = "chromium"
 
@@ -310,6 +310,14 @@ myKeys conf@(XConfig { XMonad.modMask = modMask' }) =
          , spawn "eject -T"
          )
 
+       , ( (0, xF86XK_MonBrightnessUp)
+         , spawn "sudo light -A 5"
+         )
+
+       , ( (0, xF86XK_MonBrightnessDown)
+         , spawn "sudo light -U 5"
+         )
+
   --------------------------------------------------------------------
 
          -- Close focused window.
@@ -389,7 +397,7 @@ myKeys conf@(XConfig { XMonad.modMask = modMask' }) =
 
          -- Suspend computer.
        , ( (modMask' .|. shiftMask, xK_s)
-         , spawn "systemctl suspend"
+         , spawn "sudo zzz"
          )
 
          -- Quit xmonad.
@@ -397,8 +405,8 @@ myKeys conf@(XConfig { XMonad.modMask = modMask' }) =
          , io (exitWith ExitSuccess)
          )
 
-         -- Restart xmonad.
-       , ((modMask', xK_q), restart "xmonad" True)
+       -- Restart xmonad (builds w/stack and then restarts)
+       , ((modMask', xK_q), spawn "stack exec -- xmonad --recompile" >> restart "xmonad" True)
        ]
     ++
 
@@ -520,14 +528,14 @@ myMouseBindings (XConfig { XMonad.modMask = modMask' }) =
 --
 -- By default, do nothing.
 myStartupHook = do
-  setWMName "LG3D"
+  setWMName "XMonad"
   spawn "bash ~/.xmonad/startup.sh"
   setDefaultCursor xC_left_ptr
 
 -- See https://github.com/pkrog/public-config/blob/365904a0a396ec295aab45e12b00c3381a675ea9/xmonad/xmonad.hs
 -- Adapted multi-monitor config from there.
 xmobarCommand :: Int -> String
-xmobarCommand x = "xmobar -x " ++ show x ++ " ~/.xmonad/xmobar.config"
+xmobarCommand x = "xmobar -A 85 -x " ++ show x ++ " ~/.xmonad/xmobar.config"
 
 pp :: Handle -> Int -> PP
 pp h screenId = xmobarPP

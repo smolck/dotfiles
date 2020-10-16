@@ -1,37 +1,30 @@
-local vim                  = vim
 local api                  = vim.api
 local os                   = require('os')
 require('nvim_utils')
-require('globals')
+
+-- Just a cool thing
+-- :set redrawdebug=compositor writedelay=10
 
 -- Vim function definitions {{{
-vim.fn.BuildComposer = function(info)
-    local has = vim.fn.has
-
-    if info.status ~= 'unchanged' or info.force then
-        if has('nvim') then
-            api.nvim_command('!cargo build --release')
-        else
-            api.nvim_command('!cargo build --release --no-default-features --features json-rpc')
-        end
-    end
-end
-
-vim.fn.LightlineReadonly = function()
-    if vim.g.readonly then
-        return ''
-    else
-        return ''
-    end
-end
-
-api.nvim_command [[
-    function! DeleteTrailingWS()
-      exe 'normal mz'
-      %s/\s\+$//ge
-      exe 'normal `z'
-    endfunction
-]]
+-- vim.fn.BuildComposer = function(info)
+--     local has = vim.fn.has
+--
+--     if info.status ~= 'unchanged' or info.force then
+--         if has('nvim') then
+--             api.nvim_command('!cargo build --release')
+--         else
+--             api.nvim_command('!cargo build --release --no-default-features --features json-rpc')
+--         end
+--     end
+-- end
+--
+-- vim.fn.LightlineReadonly = function()
+--     if vim.g.readonly then
+--         return ''
+--     else
+--         return ''
+--     end
+-- end
 
 api.nvim_command [[
     function! SynStack()
@@ -40,9 +33,7 @@ api.nvim_command [[
         endif
         echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
     endfunction
-]]
 
-api.nvim_command [[
     function! LightlineFugitive()
        if exists('*fugitive#head')
         let branch = fugitive#head()
@@ -50,17 +41,25 @@ api.nvim_command [[
        endif
        return ''
     endfunction
+
+    function! DeleteTrailingWS()
+      exe 'normal mz'
+      %s/\s\+$//ge
+      exe 'normal `z'
+    endfunction
 ]]
 -- }}}
 
 -- Globals {{{
 local function init_globals()
+  -- vim.g.fzf_preview_window = 'up:60%'
+
     vim.g.python3_host_prog                         = '/bin/python'
     -- vim.g.node_host_prog                            = os.getenv('HOME') .. '/.npm-global/bin/n'
-    vim.g.completion_enable_snippet                 = 'UltiSnips'
+    -- vim.g.completion_enable_snippet                 = 'UltiSnips'
 
     vim.g.startify_custom_header_quotes             = {{ os.getenv('VERSEOFDAY') }}
-    vim.g.polyglot_disabled                         = { 'dart', 'haskell', 'ocaml' }
+    -- vim.g.polyglot_disabled                         = { 'dart', 'haskell', 'ocaml' }
     vim.g.floaterm_position                         = 'center'
     vim.g.floaterm_width                            = vim.o.columns / 2
     vim.g.mapleader                                 = ';'
@@ -70,8 +69,12 @@ local function init_globals()
     vim.g.gruvbox_material_better_performance        = 1
     vim.g.gruvbox_material_diagnostic_line_highlight = 1
     vim.g.gruvbox_material_background               = 'hard'
-    -- vim.g.colors_name                               = 'gruvbox-material'
+
     vim.g.colors_name                               = 'gruvbox-material'
+    -- if vim.g.uivonim == 1 then
+    --   vim.g.colors_name                               = 'veonim'
+    -- else
+    -- end
 
     vim.g.neomake_cpp_enabled_makers                = {'clangd'}
     vim.g.python_highlight_all                      = 1
@@ -107,13 +110,13 @@ local function init_options()
   vim.bo.modeline           = true
   vim.o.modeline            = true
 
-  vim.o.timeoutlen         = 500
+  vim.o.timeoutlen         = 1000
 
   vim.o.textwidth          = 80
   vim.bo.textwidth          = 80
 
-  vim.o.splitbelow         = true
-  vim.o.splitright         = true
+  -- vim.o.splitbelow         = true
+  -- vim.o.splitright         = true
 
   vim.o.title              = true
   vim.o.ignorecase         = true
@@ -121,7 +124,7 @@ local function init_options()
   -- background         = os.date('*t').hour > 18 and 'dark' or 'light'
   vim.o.background         = 'dark'
 
-  vim.o.path               = vim.o.path .. ',' .. api.nvim_call_function('getenv', { 'PWD' })
+  api.nvim_exec(string.format('set path+=%s', os.getenv('PWD')), false)
 
   vim.o.wildmenu           = true
 
@@ -150,19 +153,21 @@ local function init_options()
 
   vim.wo.cursorline        = true
   vim.wo.linebreak         = true
-  -- vim.wo.wrap              = false
+  vim.wo.wrap              = false
   -- vim.o.lazyredraw         = true
 
   -- guifont		     = 'Hasklig\\ Bold:h14';
-  vim.o.guifont		     = 'JetBrainsMono\\ Bold:h14'
+  vim.o.guifont		     = 'JetBrains Mono:h20:b'
 
   vim.o.hidden             = true
   vim.o.showtabline        = 2 -- Always show tabline.
   vim.o.completeopt        = 'menuone,noinsert,noselect'
-  vim.o.shortmess          = vim.o.shortmess .. 'c'
 
-  vim.o.runtimepath        = vim.o.runtimepath
-    .. ",/home/smolck/.luarocks/share" .. ",/home/smolck/dev/lua/org.nvim"
+  api.nvim_exec('set shortmess+=c', false)
+  -- api.nvim_exec(
+  --   string.format(
+  --     'set runtimepath+=",%s"',
+  --       os.getenv('HOME') .. '/.luarocks/share'), false)
 
   -- Should be equivalent to `set rtp+=<SHARE_DIR>/merlin/vim` in VimL
   -- rtp                = nvim_options.rtp .. ',' .. vim.g.opamshare .. "/merlin/vim"
@@ -180,13 +185,7 @@ end
 local function create_autocmds()
     local autocmds = {
         indentation = {
-            {'FileType', 'javascript', 'setlocal shiftwidth=2'},
-            {'FileType', 'scala',      'setlocal shiftwidth=2'},
-            {'FileType', 'dart',       'setlocal shiftwidth=2'},
-            {'FileType', 'haskell',    'setlocal shiftwidth=2'},
-            {'FileType', 'ocaml',      'setlocal shiftwidth=2'},
-            {'FileType', 'go',         'setlocal shiftwidth=4'},
-            {'FileType', 'lua',         'setlocal shiftwidth=2'},
+            {'FileType', 'typescript,typescriptreact,javascript,scala,dart,haskell,ocaml,go,lua', 'setlocal shiftwidth=2'},
         },
         omnifunc = {
             {'Filetype', 'lua,reason,haskell,dart,rust,python,go,c,cpp,scala,elixir',  'setlocal omnifunc=v:lua.vim.lsp.omnifunc'},
@@ -196,13 +195,13 @@ local function create_autocmds()
         ncm2 = {
             -- Enable ncm2 for all buffers.
             -- {'BufEnter', '*', 'call ncm2#enable_for_buffer()'}
-            {'BufEnter', 'txt', 'call ncm2#enable_for_buffer()'}
+            -- {'BufEnter', 'txt', 'call ncm2#enable_for_buffer()'}
         },
         general = {
             {'FocusGained', '*', 'checktime'}
         },
         clojure = {
-            {'Syntax', 'clojure', 'ClojureHighlightReferences'},
+            -- {'Syntax', 'clojure', 'ClojureHighlightReferences'},
             -- {'VimEnter', '*', 'RainbowParentheses'},
         }
     }
@@ -223,6 +222,18 @@ local function create_mappings()
     }
 
     local mappings = {
+      ['i<Leader>sh'] = { '<esc>:lua vim.lsp.buf.signature_help()<cr>'; noremap = true; };
+      ['n<Leader>fn'] = {
+        ':silent FloatermNew --height=0.6 --width=0.6 --wintype=floating --name=floaterm1 --position=center<cr>';
+        noremap = true;
+      };
+      ['n<Leader>fk'] = {':silent FloatermKill<cr>'; noremap = true; };
+      ['n<Leader>fs'] = { ':FloatermShow<cr>'; noremap = true; };
+      ['n<Leader>fh'] = { ':FloatermHide<cr>'; noremap = true; };
+      ['n<Leader>zf'] = { ':FZFFiles<cr>'; noremap = true; };
+      ['n<Leader>zh'] = { ':FZFHistory<cr>'; noremap = true; };
+      ['n<Leader>zl'] = { ':FZFBLines<cr>'; noremap = true; };
+
         ['n<Leader>pt']  = {':NERDTreeToggle<CR>', noremap = true},
         -- ['n<Leader>']    = {":WhichKey '<Leader>'<CR>", noremap = true, silent = true},
 
@@ -284,43 +295,42 @@ end
 init_globals()
 init_options()
 
-require'colorizer'.setup()
-
 -- Should be enabled before autocmds (afaik)
 api.nvim_command('syntax enable')
 api.nvim_command('filetype plugin on')
 
+require'lsp'.setup_lsps()
+
 create_mappings()
 create_autocmds()
 
-if vim.fn.has('gnvim') ~= 0 then
-  -- Disable external tabline
-  vim.fn['gnvim#enable_ext_tabline'](0)
-  api.nvim_command('GnvimCursorEnableAnimations 0')
-end
-
-require'statusline'
-
-local gm_conf = vim.fn['gruvbox_material#get_configuration']()
-local gruvbox_material_palette =
-  vim.fn['gruvbox_material#get_palette'](gm_conf.background, gm_conf.palette)
-
-api.nvim_command('highlight SignColumn guibg=' .. gruvbox_material_palette.bg0[1])
-
 require'bufferline'.setup {
   highlights = {
-    -- close = {
-    --   guibg = gruvbox_material_palette.bg0[1];
-    -- };
-    -- bufferline_fill = {
-    --   guibg = gruvbox_material_palette.bg0[1];
-    -- };
+    bufferline_fill = {
+      -- guibg = gruvbox_material_palette.bg5[1];
+    };
   };
 }
 
+require'statusline'
+
 vim.defer_fn(function()
+  local gm_conf = vim.fn['gruvbox_material#get_configuration']()
+  local gruvbox_material_palette =
+    vim.fn['gruvbox_material#get_palette'](gm_conf.background, gm_conf.palette)
+  api.nvim_command('highlight SignColumn guibg=' .. gruvbox_material_palette.bg0[1])
+
+  require'colorizer'.setup()
   require'mysnippets'
-  require'lsp'.setup_lsps()
   require'nvim-todoist'.neovim_stuff.use_defaults()
   require'gitter'.neovim_stuff.use_defaults()
 end, 600)
+
+vim.defer_fn(function()
+  if vim.g.gnvim_runtime_loaded then
+    -- Disable external tabline
+    vim.fn['gnvim#enable_ext_tabline'](0)
+    api.nvim_command('GnvimCursorEnableAnimations 0')
+  end
+  require'treesitter'
+end, 1000)

@@ -1,12 +1,30 @@
-local gears = require('gears')
-local awful = require('awful')
+local gears         = require('gears')
+local awful         = require('awful')
 local hotkeys_popup = require("awful.hotkeys_popup")
-local menubar = require("menubar")
+local menubar       = require("menubar")
+local beautiful     = require("beautiful")
 
-local browser_cmd = "brave"
+local browser_cmd = "chromium"
 local rofi_cmd    = "rofi -show drun -theme gruvbox-dark-soft"
 
 local globalkeys = gears.table.join(
+    awful.key({ modkey }, 'i', function()
+      awful.util.spawn(os.getenv('HOME') .. '/dev/typescript/veonim-binary-stuff/veonim')
+    end),
+    awful.key({}, "XF86MonBrightnessUp", function()
+      awful.util.spawn("light -A 5")
+    end),
+    awful.key({}, "XF86MonBrightnessDown", function() awful.util.spawn("light -U 5") end),
+
+    awful.key({}, "XF86AudioLowerVolume",  function()
+        awful.util.spawn("pactl set-sink-volume @DEFAULT_SINK@ -5%")
+        beautiful.volume.update()
+    end),
+    awful.key({}, "XF86AudioRaiseVolume",  function()
+        awful.util.spawn("pactl set-sink-volume @DEFAULT_SINK@ +5%")
+        beautiful.volume.update()
+    end),
+
     awful.key({ modkey,  "Control" }, "h",      hotkeys_popup.show_help,
               {description="show help", group="awesome"}),
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
@@ -21,7 +39,7 @@ local globalkeys = gears.table.join(
     awful.key({ modkey, "Shift",  }, "p", function() awful.spawn(browser_cmd) end,
               {description = "spawn browser", group = "launcher"}),
     awful.key({ modkey,           }, "a", function() awful.spawn(rofi_cmd) end,
-              {description = "spawn rofi", group = "launcher"   }),
+              {description = "spawn app launcher", group = "launcher"   }),
 
     awful.key({ modkey, "Shift"   }, "e", awesome.quit,
               {description = "exit awesome", group = "awesome"}),
@@ -125,6 +143,10 @@ local clientkeys = gears.table.join(
             c:raise()
         end,
         {description = "toggle fullscreen", group = "client"}),
+
+    awful.key({modkey,  "Shift"   }, "o", function () awful.util.spawn("emacsclient -nc") end,
+              {description = "Launch emacs client", group = "launcher"}),
+
     awful.key({ modkey, "Shift"   }, "q",      function (c) c:kill()                         end,
               {description = "close", group = "client"}),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ,
