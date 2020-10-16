@@ -332,5 +332,5 @@ vim.defer_fn(function()
     vim.fn['gnvim#enable_ext_tabline'](0)
     api.nvim_command('GnvimCursorEnableAnimations 0')
   end
-  require'treesitter'
+  -- require'treesitter'
 end, 1000)

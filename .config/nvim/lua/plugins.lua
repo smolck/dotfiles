@@ -7,7 +7,7 @@ require('packer').startup(function()
 
   -- use 'cocopon/iceberg.vim'
 
-  use 'nvim-treesitter/nvim-treesitter'
+  use {'nvim-treesitter/nvim-treesitter', opt = true}
   use 'vigoux/architext.nvim'
 
   use 'dstein64/vim-startuptime'
