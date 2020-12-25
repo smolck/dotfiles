@@ -2,6 +2,12 @@ local api                  = vim.api
 local os                   = require('os')
 require('nvim_utils')
 
+if vim.g.uivonim == 1 then
+  vim.defer_fn(function()
+    require'uivonim'.notify_uivonim('enable-ext-statusline', false)
+  end, 1000)
+end
+
 -- Just a cool thing
 -- :set redrawdebug=compositor writedelay=10
 
@@ -52,7 +58,13 @@ api.nvim_command [[
 
 -- Globals {{{
 local function init_globals()
+  vim.g.completion_enable_auto_hover = 0
+
   -- vim.g.fzf_preview_window = 'up:60%'
+
+  -- vim.g.pear_tree_smart_openers = 1
+  -- vim.g.pear_tree_smart_closers = 1
+  -- vim.g.pear_tree_smart_backspace = 1
 
     vim.g.python3_host_prog                         = '/bin/python'
     -- vim.g.node_host_prog                            = os.getenv('HOME') .. '/.npm-global/bin/n'
@@ -70,10 +82,11 @@ local function init_globals()
     vim.g.gruvbox_material_diagnostic_line_highlight = 1
     vim.g.gruvbox_material_background               = 'hard'
 
-    vim.g.colors_name                               = 'gruvbox-material'
+    -- vim.g.colors_name                               = 'gruvbox-material'
+    vim.g.colors_name                               = 'oak'
     -- if vim.g.uivonim == 1 then
-    --   vim.g.colors_name                               = 'veonim'
     -- else
+    --    vim.g.colors_name                               = 'gruvbox-material'
     -- end
 
     vim.g.neomake_cpp_enabled_makers                = {'clangd'}
@@ -103,6 +116,8 @@ end
 
 -- Options {{{
 local function init_options()
+  vim.o.clipboard = 'unnamedplus'
+
   vim.bo.swapfile         = false
   vim.o.swapfile          = false
 
@@ -115,7 +130,7 @@ local function init_options()
   vim.o.textwidth          = 80
   vim.bo.textwidth          = 80
 
-  -- vim.o.splitbelow         = true
+  vim.o.splitbelow         = true
   -- vim.o.splitright         = true
 
   vim.o.title              = true
@@ -157,7 +172,11 @@ local function init_options()
   -- vim.o.lazyredraw         = true
 
   -- guifont		     = 'Hasklig\\ Bold:h14';
-  vim.o.guifont		     = 'JetBrains Mono:h20:b'
+  if vim.g.uivonim == 1 then
+    vim.o.guifont		     = 'JetBrains Mono:h20:b'
+  else
+    vim.o.guifont		     = 'JetBrains Mono:h14:b'
+  end
 
   vim.o.hidden             = true
   vim.o.showtabline        = 2 -- Always show tabline.
@@ -185,10 +204,11 @@ end
 local function create_autocmds()
     local autocmds = {
         indentation = {
-            {'FileType', 'typescript,typescriptreact,javascript,scala,dart,haskell,ocaml,go,lua', 'setlocal shiftwidth=2'},
+            {'FileType', 'typescript,typescriptreact,javascript,scala,dart,haskell,ocaml,go', 'setlocal shiftwidth=2'},
         },
         omnifunc = {
-            {'Filetype', 'lua,reason,haskell,dart,rust,python,go,c,cpp,scala,elixir',  'setlocal omnifunc=v:lua.vim.lsp.omnifunc'},
+            {'Filetype', 'typescript,typescriptreact,lua,reason,haskell,dart,rust,python,go,c,cpp,scala,elixir',  'setlocal omnifunc=v:lua.vim.lsp.omnifunc'},
+            {'Filetype', 'plaintex',  'setlocal omnifunc=vimtex#complete#omnifunc'},
             -- {'Filetype', 'fennel',                                          'setlocal omnifunc=fnl#omniComplete'},
             -- {'Filetype', 'lua',                                             'setlocal omnifunc=fnl#omniCompleteLua'}
         },
@@ -223,6 +243,7 @@ local function create_mappings()
 
     local mappings = {
       ['i<Leader>sh'] = { '<esc>:lua vim.lsp.buf.signature_help()<cr>'; noremap = true; };
+      ['i<Leader>ci'] = { '<esc>:lua vim.lsp.buf.completion()<cr>'; noremap = true; };
       ['n<Leader>fn'] = {
         ':silent FloatermNew --height=0.6 --width=0.6 --wintype=floating --name=floaterm1 --position=center<cr>';
         noremap = true;
@@ -313,6 +334,7 @@ require'bufferline'.setup {
 }
 
 require'statusline'
+require'treesitter'
 
 vim.defer_fn(function()
   local gm_conf = vim.fn['gruvbox_material#get_configuration']()
@@ -322,7 +344,6 @@ vim.defer_fn(function()
 
   require'colorizer'.setup()
   require'mysnippets'
-  require'nvim-todoist'.neovim_stuff.use_defaults()
   require'gitter'.neovim_stuff.use_defaults()
 end, 600)
 
@@ -331,6 +352,5 @@ vim.defer_fn(function()
     -- Disable external tabline
     vim.fn['gnvim#enable_ext_tabline'](0)
     api.nvim_command('GnvimCursorEnableAnimations 0')
-  end
-  -- require'treesitter'
+  end -- require'treesitter'
 end, 1000)

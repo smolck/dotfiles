@@ -1,6 +1,8 @@
 if !exists('g:vscode')
     let g:polyglot_disabled = [ 'dart', 'haskell', 'ocaml' ]
 
+    let g:tex_flavor = 'latex'
+
     lua require('globals')
     lua require('plugins')
 

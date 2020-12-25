@@ -1,18 +1,22 @@
 vim.cmd [[packadd packer.nvim]]
-vim._update_package_paths()
 
 require('packer').startup(function()
   local use = use
   use {'wbthomason/packer.nvim', opt = true}
 
+  use 'lervag/vimtex'
+
+  use 'vigoux/oak'
+
   -- use 'cocopon/iceberg.vim'
 
-  use {'nvim-treesitter/nvim-treesitter', opt = true}
+  use 'nvim-treesitter/nvim-treesitter'
   use 'vigoux/architext.nvim'
 
   use 'dstein64/vim-startuptime'
   -- use 'voldikss/vim-floaterm'
 
+  -- use { 'tmsvg/pear-tree', event = 'InsertEnter *' }
   use {'Raimondi/delimitMate', event = 'InsertEnter *'}
 
   use 'kyazdani42/nvim-web-devicons'
@@ -38,7 +42,7 @@ require('packer').startup(function()
   use 'nvim-lua/completion-nvim'
   use 'norcalli/ui.nvim'
 
-  use '~/dev/lua/nvim-todoist.lua'
+  -- use '~/dev/lua/nvim-todoist.lua'
   -- use {'smolck/nvim-todoist.lua', branch = 'plenary-as-submodule'}
   use '~/dev/lua/gitter.nvim'
 
@@ -47,7 +51,6 @@ require('packer').startup(function()
   -- use '~/dev/lua/org.nvim'
   use 'sainnhe/tmuxline.vim'
 
-  use 'ActivityWatch/aw-watcher-vim'
   use 'mhinz/vim-startify'
 
   -- use 'guns/vim-clojure-static'

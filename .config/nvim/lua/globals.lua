@@ -1,5 +1,12 @@
 local api = vim.api
 
+-- https://gist.github.com/nblackburn/875e6ff75bc8ce171c758bf75f304707#gistcomment-2588452
+function _G.helpfulness()
+  local word = vim.fn.expand('<cword>')
+
+  api.nvim_feedkeys('ciw' .. "'" .. (word:gsub('([%a%d])([%u])', '%1-%2')):lower() .. "'", 'n', true)
+end
+
 function _G.dump(x)
   print(vim.inspect(x))
 end

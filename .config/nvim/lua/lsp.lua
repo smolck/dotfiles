@@ -1,31 +1,13 @@
-local nvim_lsp  = require 'nvim_lsp'
-local util      = require 'nvim_lsp/util'
-local configs  = require 'nvim_lsp/configs'
+local lspconfig  = require 'lspconfig'
+local util      = require 'lspconfig/util'
+local configs  = require 'lspconfig/configs'
 local completion_on_attach = require('completion').on_attach
 
+local setup_table = {
+    on_attach = completion_on_attach,
+    handlers = vim.g.uivonim == 1 and require'uivonim/lsp'.callbacks or nil
+}
 local lsp = {}
-
--- Thanks TJ:
--- https://github.com/tjdevries/nlua.nvim/blob/a00062720c85cd84a4d11919559f66effbe979d1/lua/nlua/lsp/nvim.lua#L3-L21
-local function sumneko_command()
-  local cache_location = vim.fn.stdpath('cache')
-
-  -- TODO: Need to figure out where these paths are & how to detect max os... please, bug reports
-  local bin_location = jit.os
-
-  return {
-    string.format(
-      "%s/nvim_lsp/sumneko_lua/lua-language-server/bin/%s/lua-language-server",
-      cache_location,
-      bin_location
-    ),
-    "-E",
-    string.format(
-      "%s/nvim/nvim_lsp/sumneko_lua/lua-language-server/main.lua",
-      cache_location
-    ),
-  }
-end
 
 local function setup_custom_lsps()
   configs.elixir_ls = {
@@ -68,60 +50,58 @@ local function setup_custom_lsps()
   --     }
   -- }
 
-  -- nvim_lsp.haskell_ide_engine.setup { on_attach = language_client_setup, }
-  -- nvim_lsp.reason_ls.setup { on_attach = language_client_setup, }
+  -- lspconfig.haskell_ide_engine.setup { on_attach = language_client_setup, }
+  -- lspconfig.reason_ls.setup { on_attach = language_client_setup, }
 
-  -- nvim_lsp.elixir_ls.setup { on_attach = completion_on_attach, }
+  -- lspconfig.elixir_ls.setup { on_attach = completion_on_attach, }
+end
+
+local function stuff(tbl)
+  return vim.tbl_extend('force', setup_table, tbl)
 end
 
 function lsp.setup_lsps()
   setup_custom_lsps()
 
+
   local home = os.getenv('HOME')
-  nvim_lsp.gopls.setup { on_attach = completion_on_attach, cmd = { home .. '/dev/go/bin/gopls' }, }
+  lspconfig.gopls.setup(setup_table)
 
-  nvim_lsp.zls.setup { on_attach = completion_on_attach }
+  lspconfig.texlab.setup(setup_table)
 
-  -- nvim_lsp.rls.setup { cmd = { 'rustup', 'run', 'nightly', 'rls' } }
-  -- nvim_lsp.clangd.setup { {} }
+  lspconfig.zls.setup(setup_table)
 
-  nvim_lsp.ccls.setup {}
-  nvim_lsp.pyls.setup { on_attach = completion_on_attach }
+  -- lspconfig.rls.setup { cmd = { 'rustup', 'run', 'nightly', 'rls' } }
+  -- lspconfig.clangd.setup { {} }
 
-  nvim_lsp.julials.setup { on_attach = completion_on_attach }
-  nvim_lsp.rls.setup {
-    on_attach = completion_on_attach,
-    cmd = { 'rustup', 'run', 'nightly', 'rls' }
-  }
+  lspconfig.ccls.setup(setup_table)
+  lspconfig.pyls.setup(setup_table)
 
-  nvim_lsp.dartls.setup { on_attach = completion_on_attach }
+  lspconfig.julials.setup(setup_table)
+  lspconfig.rust_analyzer.setup(setup_table)
+  -- lspconfig.rls.setup(stuff({
+  --   cmd = { 'rustup', 'run', 'nightly', 'rls' }
+  -- }))
 
-  if vim.g.uivonim == 1 then
-    local lsp_callbacks = require'uivonim/lsp'.callbacks
+  lspconfig.dartls.setup(setup_table)
+  lspconfig.omnisharp.setup(vim.tbl_extend('force', setup_table, {
+      root_dir = util.root_pattern('.csproj', '.sln', '.git', '.fsproj')
+  }))
 
-    nvim_lsp.texlab.setup {
-      on_attach = completion_on_attach;
-      callbacks = lsp_callbacks;
+  require'nlua.lsp.nvim'.setup(lspconfig, vim.tbl_extend('force', setup_table, {
+    globals = {
+      -- AwesomeWM
+      -- 'root'
+    },
+    library = {
+      -- TODO(smolck): Doesn't work . . .
+      ['/usr/share/awesome/lib/awful'] = true,
+      ['/usr/share/awesome/lib/beautiful'] = true,
+      ['/usr/share/awesome'] = true,
     }
-
-    -- nvim_lsp.sumneko_lua.setup {
-    --   command = sumneko_command();
-    --   on_attach = completion_on_attach;
-    --   callbacks = lsp_callbacks;
-    -- }
-    require'nlua.lsp.nvim'.setup(nvim_lsp, {
-      on_attach = completion_on_attach;
-      callbacks = lsp_callbacks;
-    })
-    nvim_lsp.tsserver.setup {
-      on_attach = completion_on_attach;
-      callbacks = lsp_callbacks;
-    }
-    return
-  end
-
-  require'nlua.lsp.nvim'.setup(nvim_lsp, { on_attach = completion_on_attach })
-  nvim_lsp.tsserver.setup { on_attach = completion_on_attach }
+  }))
+  lspconfig.tsserver.setup(setup_table)
+  lspconfig.metals.setup(setup_table)
 end
 
 return lsp

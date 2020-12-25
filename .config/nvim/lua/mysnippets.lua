@@ -1,5 +1,7 @@
-require'snippets'.use_suggested_mappings()
-require'snippets'.set_ux(require'snippets.inserters.floaty')
+local snippets = require'snippets'
+snippets.use_suggested_mappings()
+snippets.set_ux(require'snippets.inserters.floaty')
+local match_indent = snippets.u.match_indentation
 
 function nested_list(input)
   local indent = 0
@@ -34,6 +36,15 @@ function create_list_of_strings(input)
 end
 
 require'snippets'.snippets = {
+  typescriptreact = {
+    stydiv = match_indent [[
+<div style={{
+    ${1}
+  }}>
+    ${2}
+  </div>
+]]
+  };
   todoist = {
     create_task = [[${1|nested_list(S.v)}]];
   };
